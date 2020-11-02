@@ -28,5 +28,11 @@ What puts YouAuth in a different position than standard login systems is that it
 >
 >Steve has found out over the years that the main security vulnerability is the use of weak passwords. He has received on average, ten calls a month about a account being stolen. When talking with the clients, he found out that they didn't like having long and complex passwords because they were difficult to remember. Recommending something like a password manager was also too tedious for some because they didn't feel safe storing all their passwords in one place. YouAuth will allow bank clients to log in using their face as a extra authenticator, and is easy to use with just a webcam.
 
-### Name
->Persona
+### Jacob, 28
+>Jacob is white collar worker in Philadelphia and he suffers from dyslexia. He commutes to work everyday on the train where he works for Comcast in their media department.
+Throughout the day, Jacob has to log on and off websites, some of which are work-related, and others of which are personal. 
+The websites he uses include email, social media sites, entertainment sites such as YouTube, and business websites for work. 
+Logging into these websites can take a long time and be very frustrating because of his dyslexia. 
+If Jacob had access to YouAuth, the facial recognition software would help him log into
+these website securely and quickly without having to struggle to enter in long, complicated passwords. 
+Not only would this save Jacob time at work but it would also help him avoid unwarranted frustration.

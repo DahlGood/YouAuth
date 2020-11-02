@@ -16,8 +16,8 @@ What puts YouAuth in a different position than standard login systems is that it
 
 ## Persona
 
-### Name
->Persona
+### Paul, 26
+>Paul is a software developer for an online learning platform that allows students to learn and interact with tutors who provide resources for various curricula. The company requires its users to register to gain access to many of the features on the website. Rather than simply logging in with a user/password combination, Paul wishes to enhance the user’s experience by optimizing the authentication of their account with the use of YouAuth. YouAuth conveniently allows developers like Paul to implement a system that allows users to register and login with an image capture of their face. With a quick glance at the camera, user’s will have their appearance or any changes thereof, automatically adapted to by YouAuth. Whether it’s a difference in facial hair, accessories, or makeup, a clear distinction between different users will be made with our technology. Paul can safeguard the information of his user’s via YouAuth which will vectorize the captured image of the student and store it in a database to associate the identity of each person. Student’s can now seamlessly login or register for the company with a quick picture, granting them access to many more of the website’s features.
 
 
 ### Matthew, 45

@@ -4,9 +4,9 @@
 Luke Dependahl, Ramey Elayan, Peter Zheng, Nate Hansell
 
 ## Project Vision
-For companies, campuses, and other larger organizations/corporations who need better and more efficient security for their websites. YouAuth will be a node module that can be seamlessly integrated into websites to provide facial recognition functionality through use of the open source computer vision library, OpenCV. YouAuth can either replace the use of usernames/passwords, or be added as an extra layer of authentication.
+For companies, campuses, and other larger organizations/corporations who need better and more efficient security for their websites. YouAuth will be a node module that can be seamlessly integrated into websites to provide facial recognition functionality through the use of the open source computer vision library, OpenCV. YouAuth can either replace the use of usernames/passwords, or be added as an extra layer of authentication.
 
-What puts YouAuth in a different position than standard login systems is that it uses biometrics, a ever increasingly popular way of identifying individuals based off their biological features. Unlike similar security services like FaceID, YouAuth will not be device specific, and can be cross platform as necessary for platforms that support running web applications.
+What differentiates YouAuth from standard login systems is that it uses biometrics, an increasingly popular way of identifying individuals based off their biological features. Unlike similar security services like FaceID, YouAuth will not be device specific, and can be cross platform as necessary for platforms that support running web applications.
 
 ## Features
 

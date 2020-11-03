@@ -10,8 +10,10 @@ What puts YouAuth in a different position than standard login systems is that it
 
 ## Features
 
-* Image caputure
+* User login and registration pages.
+* Image capture
 * Image training with OpenCV
+* 2FA
 * Secure data storage
 
 ## Persona

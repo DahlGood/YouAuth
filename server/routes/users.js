@@ -57,6 +57,36 @@ router.post('/register', (req, res) => {
 
 });
 
+router.post('/login', (req, res) => {
+
+	const {errors, valid} = validateLogin(req.body);
+
+	//If the registration input is not valid return an error code with the specific errors present.
+	if(!valid) {
+		return res.status(400).json(errors);
+	}
+
+	User.findOne({email: req.body.email}).then( user => {
+		if(!user) {
+			return res.status(404).json({badEmail: "Invalid Email Address Entered."});
+		}
+
+
+		/*
+
+			bcrypt.compare(req.body.password, user.password).then(isMatch => {
+				if(match) {
+					start creating tokens
+				}
+			});
+
+		*/
+
+	});
+
+
+});
+
 /* GET users listing. */
 router.get('/', function(req, res, next) {
 	res.send('respond with a resource');

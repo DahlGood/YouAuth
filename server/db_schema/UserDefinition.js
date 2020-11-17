@@ -32,4 +32,5 @@ const UserSchema = new Schema({
 		how will we store face data?
 	}
 	*/
-});
+
+module.exports = UserDefinition = mongoose.model("users", UserSchema);

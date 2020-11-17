@@ -49,6 +49,7 @@ router.post('/register', (req, res) => {
 				password: req.body.password
 			});
 
+			//Look up salt rounds. This is just an excuse for a git compare
 			var saltRounds = 10;
 			//This is kind of confusing but the function accepting (err, salt) is a callback that only gets fired after the salt has been generated. https://www.npmjs.com/package/bcrypt
 			bcrypt.genSalt(saltRounds, (err, salt) => {

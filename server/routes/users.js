@@ -14,18 +14,21 @@ const validateLogin = require('./api/login');
 //Importing environment variables from .env
 require('dotenv').config();
 const envVars = process.env;
-const { MONGO_URI, PORT } = envVars;
+const { MONGO_URI, PORT, SECRET_KEY } = envVars;
 
 //Importing our definition of a user for the mongo db.
 const User = require('../db_schema/UserDefinition');
 
+//JWT Auth stuff
+const { ExtractJwt } = require('passport-jwt');
+
 
 router.post('/register', (req, res) => {
 
-	const {errors, valid} = validateRegistration(req.body);
+	const {errors, notValid} = validateRegistration(req.body);
 
 	//If the registration input is not valid return an error code with the specific errors present.
-	if(!valid) {
+	if(notValid) {
 		return res.status(400).json(errors);
 	}
 
@@ -33,62 +36,89 @@ router.post('/register', (req, res) => {
 	//Query documentation https://mongoosejs.com/docs/api/query.html#query_Query
 	//findOne() documentation - https://mongoosejs.com/docs/api/query.html#query_Query-findOne
 	//findOne() returns a mongoose "Query" which is a "promise-like" object. This allows us to use .then even though findOne() doesnt return a fully-fledged promise. https://stackoverflow.com/questions/35662210/does-mongoose-findone-on-model-return-a-promise
-	/*
 	User.findOne({email: req.body.email}).then(user => {
-		if(user exists){
-			return an error
+		//If the user exists.
+		if(user){
+			return res.status(400).json({email: "A user with that Email already exists."});
 		}	
 		else {
-			create a new user based on UserDefinition
+			const newUser = new User({
+				fName: req.body.fName,
+				lName: req.body.lName,
+				email: req.body.email,
+				password: req.body.password
+			});
+
+			//Look up salt rounds. This is just an excuse for a git compare
+			var saltRounds = 10;
+			//This is kind of confusing but the function accepting (err, salt) is a callback that only gets fired after the salt has been generated. https://www.npmjs.com/package/bcrypt
+			bcrypt.genSalt(saltRounds, (err, salt) => {
+				bcrypt.hash(newUser.password, salt, (err, hash) => {
+					if(err) {
+						throw err;
+					}
+					newUser.password = hash;
+					newUser.save().then(user => res.json(user)).catch(err => console.log(err));
+				});
+			});
 		}
 	});
-	*/
 	
-	/*
-	var saltRounds = 10;
-	//This is kind of confusing but the function accepting (err, salt) is a callback that only gets fired after the salt has been generated. https://www.npmjs.com/package/bcrypt
-	bcrypt.genSalt(saltRounds, (err, salt) => {
-		bcrypt.hash(users password, salt, (err, hash) => {
-			set the hash to the pass
-			save the user to the db
-		});
-	});
-	*/
 
 });
 
 router.post('/login', (req, res) => {
 
-	const {errors, valid} = validateLogin(req.body);
+	const {errors, notValid} = validateLogin(req.body);
 
 	//If the registration input is not valid return an error code with the specific errors present.
-	if(!valid) {
+	if(notValid) {
 		return res.status(400).json(errors);
 	}
 
-	User.findOne({email: req.body.email}).then( user => {
+	//Getting email and password the user entered from the request.
+	const email = req.body.email;
+	const password = req.body.password;
+
+	//Searching db to see if a user with that email exists.
+	User.findOne({email}).then( user => {
 		if(!user) {
-			return res.status(404).json({badEmail: "Invalid Email Address Entered."});
+			return res.status(400).json({badEmail: "Invalid Email Address Entered."});
 		}
 
+		//Hashes entered password and compares it with the one in the db.
+		bcrypt.compare(password, user.password).then(match => {
+			//If the password matches generate a payload of user id and password (what does the payload do? research more jwt stuff.)
+			if(match) {
+				const payload = {
+					id: user.id,
+					email: user.email
+				};
 
-		/*
-
-			bcrypt.compare(req.body.password, user.password).then(isMatch => {
-				if(match) {
-					start creating tokens
-				}
-			});
-
-		*/
-
+				//Sign the token with the payload, secret key, and expiration time.
+				jsonwebtoken.sign(
+					payload,
+					SECRET_KEY,
+					{expiresIn: 31556926},
+					(err, token) => {
+						res.json({
+							success: true,
+							token: "Bearer " + token
+						});
+					}
+				);
+			}
+			else {
+				return res.status(400).json({passCorrectness: "Invalid password entered."});
+			}
+		});
 	});
-
-
 });
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
+	var x = app._router.stack;
+	console.log(x);
 	res.send('respond with a resource');
 });
 

@@ -1,10 +1,10 @@
 const validator = require('validator');
-import "../../src/util"
+const isEmpty = require('is-empty');
 
 module.exports = function validateLogin(input) {
 	let errors = {};
-	input.email = empty(input.email);
-	input.password = empty(input.password);
+	input.email = !isEmpty(input.email) ? input.email : "";
+	input.password = !isEmpty(input.password) ? input.password : "";
 
 	if(validator.isEmpty(input.email) && validator.isEmail(input.email)) {
 		errors.email = "You must enter a valid email.";

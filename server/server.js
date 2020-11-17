@@ -7,6 +7,12 @@ const mongoose = require('mongoose');
 //For parsing user entered data like email and password.
 const bodyParser = require('body-parser');
 
+//Adding our passport information.
+const passport = require("passport");
+
+//Importing our api-endpoints
+const users = require("./routes/users");
+
 //Setting environment variable config.
 require('dotenv').config();
 
@@ -24,11 +30,22 @@ server.use(
 		extended: false
 	})
 );
+
 server.use(bodyParser.json());
 
-/*
-	Connect to mongo here
-*/
+//Setting up DB connections.
+const db = MONGO_URI;
+
+//Connect to DB.
+mongoose.connect(db, {useNewUrlParser: true}).then(() => console.log("MongoDB Connection Successful!")).catch(err => console.log(err));
+
+//Passport stuff
+server.use(passport.initialize());
+
+require("./config/passport")(passport);
+
+//Routes
+server.use("/users", users);
 
 server.listen(envVars.PORT, () => {
 	console.log("Server running on port: " + envVars.PORT);

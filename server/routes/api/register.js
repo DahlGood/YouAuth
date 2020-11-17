@@ -1,16 +1,13 @@
 const validator = require('validator');
-const isEmpty = require('is-empty');
-//import "../../src/util";
-//require("../src/util")
+import "../../src/util"
 
 module.exports = function validateRegistration(input) {
 	let errors = {};
-	input.name = !isEmpty(input.fName) ? input.fName : "";
-	input.name = !isEmpty(input.lName) ? input.lName : "";
-	input.email = !isEmpty(input.email) ? input.email : "";
-	input.password = !isEmpty(input.password) ? input.password : "";
-	input.confirm_password = !isEmpty(input.confirm_password) ? input.confirm_password : "";
-
+	input.name = empty(input.fName);
+	input.name = empty(input.lName);
+	input.email = empty(input.email);
+	input.password = empty(input.password);
+	input.confirm_password = empty(input.confirm_password);
 
 	if(validator.isEmpty(input.fName)) {
 		errors.fName = "You must enter a first name.";
@@ -32,9 +29,7 @@ module.exports = function validateRegistration(input) {
 		errors.confirm_password = "You must confirm your password.";
 	}
 
-
-	if(!validator.equals(input.password, input.confirm_password)) {
-
+	if(validator.equals(input.password, input.confirm_password)) {
 		errors.confirm_password = "Your passwords do not match."
 	}
 

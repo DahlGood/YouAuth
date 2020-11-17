@@ -47,6 +47,7 @@ require("./config/passport")(passport);
 //Routes
 server.use("/users", users);
 
+
 server.listen(envVars.PORT, () => {
 	console.log("Server running on port: " + envVars.PORT);
 })

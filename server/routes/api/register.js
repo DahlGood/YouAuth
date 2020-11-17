@@ -11,6 +11,7 @@ module.exports = function validateRegistration(input) {
 	input.password = !isEmpty(input.password) ? input.password : "";
 	input.confirm_password = !isEmpty(input.confirm_password) ? input.confirm_password : "";
 
+
 	if(validator.isEmpty(input.fName)) {
 		errors.fName = "You must enter a first name.";
 	}
@@ -31,7 +32,9 @@ module.exports = function validateRegistration(input) {
 		errors.confirm_password = "You must confirm your password.";
 	}
 
+
 	if(!validator.equals(input.password, input.confirm_password)) {
+
 		errors.confirm_password = "Your passwords do not match."
 	}
 

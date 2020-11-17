@@ -16,6 +16,7 @@ require('dotenv').config();
 const envVars = process.env;
 const { MONGO_URI, PORT, SECRET_KEY } = envVars;
 
+
 //Importing our definition of a user for the mongo db.
 const User = require('../db_schema/UserDefinition');
 
@@ -62,13 +63,11 @@ router.post('/register', (req, res) => {
 			});
 		}
 	});
-	
-
 });
 
 router.post('/login', (req, res) => {
 
-	const {errors, notValid} = validateLogin(req.body);
+const {errors, notValid} = validateLogin(req.body);
 
 	//If the registration input is not valid return an error code with the specific errors present.
 	if(notValid) {

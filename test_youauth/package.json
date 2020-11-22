@@ -1,0 +1,15 @@
+{
+  "name": "test_youauth",
+  "version": "1.0.0",
+  "description": "testing youauth NOTE: youauth is not published yet, so install from local directory.",
+  "main": "test.js",
+  "dependencies": {
+    "youauth": "^1.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

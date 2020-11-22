@@ -4,42 +4,41 @@ import loginImage from "../../login.svg";
 const axios = require("axios");
 
 export class Login extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+	constructor(props) {
+		super(props);
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
 
-  handleSubmit(event) {
-    event.preventDefault();
-    const data = new FormData(event.target);
-    let userData = {
-      "email": data.get("email"),
-      "password": data.get("password")
-    };
+	handleSubmit(event) {
+		event.preventDefault();
+		const data = new FormData(event.target);
+		let userData = {
+			"email": data.get("email"),
+			"password": data.get("password")
+		};
 
-    axios.post("http://157.245.136.250:3000/users/login", userData).then(response => console.log(response));
-  }
+		axios.post("http://157.245.136.250:3000/users/login", userData).then(response => console.log(response)).catch(err => console.log(err));
+	}
 
-  render() {
-    return (
-      <div className="base-container">
-        <div className="header">Login</div>
-        <div className="content">
-          <div className="image">
-            <img src={loginImage} />
-          </div>
-          <form className="form" onSubmit={this.handleSubmit}>
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input type="text" name="email" placeholder="email" />
-            </div>
-            <div className="form-group">
-              <label htmlFor="password">password</label>
-              <input type="text" name="password" placeholder="password" />
-            </div>
-            <button>Send INfo</button>
-          </form>
-        </div>
-      </div>
-    );
-  }
+	render() {
+		return (
+			<div className="base-container">
+				<div className="header">Login</div>
+				<div className="content">
+					<div className="image">
+						<img src={loginImage} alt="" />
+					</div>
+					<form className="form" onSubmit={this.handleSubmit}>
+						<div className="form-group">
+							<input type="text" name="email" placeholder="Email" />
+						</div>
+						<div className="form-group">
+							<input type="password" name="password" placeholder="Password" />
+						</div>
+						<button className="btn">Login</button>
+					</form>
+				</div>
+			</div>
+		);
+	}
 }

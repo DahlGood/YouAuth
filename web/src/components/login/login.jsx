@@ -1,9 +1,22 @@
 import React from "react";
 import loginImage from "../../login.svg";
 
+const axios = require("axios");
+
 export class Login extends React.Component {
   constructor(props) {
     super(props);
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    const data = new FormData(event.target);
+    let userData = {
+      "email": data.get("email"),
+      "password": data.get("password")
+    };
+
+    axios.post("http://157.245.136.250:3000/users/login", userData).then(response => console.log(response));
   }
 
   render() {
@@ -14,21 +27,17 @@ export class Login extends React.Component {
           <div className="image">
             <img src={loginImage} />
           </div>
-          <div className="form">
+          <form className="form" onSubmit={this.handleSubmit}>
             <div className="form-group">
-              <label htmlFor="username">Username</label>
-              <input type="text" name="username" placeholder="username" />
+              <label htmlFor="email">Email</label>
+              <input type="text" name="email" placeholder="email" />
             </div>
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">password</label>
               <input type="text" name="password" placeholder="password" />
             </div>
-          </div>
-        </div>
-        <div className="footer">
-          <button type="button" className="btn">
-            Login
-          </button>
+            <button>Send INfo</button>
+          </form>
         </div>
       </div>
     );

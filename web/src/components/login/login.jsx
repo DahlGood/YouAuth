@@ -3,6 +3,11 @@ import loginImage from "../../login.svg";
 
 const axios = require("axios");
 
+//Importing environment variables from .env
+require("dotenv").config();
+const envVars = process.env;
+const { REACT_APP_LOGINROUTE } = envVars;
+
 export class Login extends React.Component {
 	constructor(props) {
 		super(props);
@@ -11,13 +16,13 @@ export class Login extends React.Component {
 
 	handleSubmit(event) {
 		event.preventDefault();
+
 		const data = new FormData(event.target);
 		let userData = {
 			"email": data.get("email"),
 			"password": data.get("password")
 		};
-
-		axios.post("http://157.245.136.250:3000/users/login", userData).then(response => console.log(response)).catch(err => console.log(err));
+		axios.post(REACT_APP_LOGINROUTE, userData).then(response => console.log(response)).catch(err => console.log(err));
 	}
 
 	render() {

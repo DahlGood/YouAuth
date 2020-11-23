@@ -14,7 +14,7 @@ const validateLogin = require("./api/login");
 //Importing environment variables from .env
 require("dotenv").config();
 const envVars = process.env;
-const { MONGO_URI, PORT, SECRET_KEY } = envVars;
+const { MONGO_URI, PORT, SECRET_KEY} = envVars;
 
 //Importing our definition of a user for the mongo db.
 const User = require("../db_schema/UserDefinition");

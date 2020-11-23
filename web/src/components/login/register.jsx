@@ -3,6 +3,11 @@ import loginImage from "../../login.svg";
 
 const axios = require("axios");
 
+//Importing environment variables from .env
+require("dotenv").config();
+const envVars = process.env;
+const { REGROUTE } = envVars;
+
 export class Register extends React.Component {
 	constructor(props) {
 		super(props);
@@ -20,7 +25,7 @@ export class Register extends React.Component {
 			"confirm_password": data.get("confirm_password")
 		};
 
-		axios.post("http://157.245.136.250:3000/users/register", userData).then(response => console.log(response)).catch(err => console.log(err));
+		axios.post(REGROUTE, userData).then(response => console.log(response)).catch(err => console.log(err));
 
 	}
 

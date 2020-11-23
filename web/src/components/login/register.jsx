@@ -1,6 +1,6 @@
 import React from "react";
 import loginImage from "../../login.svg";
-
+import FaceCapture from "../../../node_modules/youauth/face_capture";
 const axios = require("axios");
 
 //Importing environment variables from .env
@@ -12,6 +12,7 @@ export class Register extends React.Component {
 	constructor(props) {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		//this.testVideo = this.testVideo.bind(this);
 	}
 
 	handleSubmit(event) {
@@ -29,6 +30,31 @@ export class Register extends React.Component {
 
 	}
 
+	// export function testFunction(){
+	// 	this.
+	// }
+
+	testVideo(){
+		console.log("testing video function");
+		let constraints = {
+			video: {
+			width: 630,
+			height: 500,
+			}
+		};
+
+		var video = document.querySelector('video');
+		//console.log(video);
+		var imageBitmap;
+		let faceCapture = new FaceCapture(constraints, video)
+		faceCapture.startStream();
+	}
+
+	handleVideo(e){
+		this.testVideo();
+	}
+
+
 	render() {
 		return (
 			<div className="base-container">
@@ -40,6 +66,7 @@ export class Register extends React.Component {
 					</div>
 
 					<form className="form" onSubmit={this.handleSubmit}>
+
 						<div className="form-group">
 							<input type="text" name="fName" placeholder="First Name" />
 						</div>
@@ -58,6 +85,9 @@ export class Register extends React.Component {
 
 						<button className="btn">Register</button>
 					</form>
+					<button onClick = {this.handleVideo.bind(this)}>Button video</button>
+					<video ></video>
+					
 				</div>
 			</div>
 		);

@@ -6,7 +6,7 @@ const axios = require("axios");
 //Importing environment variables from .env
 require("dotenv").config();
 const envVars = process.env;
-const { REGROUTE } = envVars;
+const { REACT_APP_REGROUTE } = envVars;
 
 export class Register extends React.Component {
 	constructor(props) {
@@ -25,7 +25,7 @@ export class Register extends React.Component {
 			"confirm_password": data.get("confirm_password")
 		};
 
-		axios.post(REGROUTE, userData).then(response => console.log(response)).catch(err => console.log(err));
+		axios.post(REACT_APP_REGROUTE, userData).then(response => console.log(response)).catch(err => console.log(err));
 
 	}
 

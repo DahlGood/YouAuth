@@ -5,6 +5,7 @@
 ./web/.pnp
 ./web/.pnp.js
 /server/node_modules
+/server/.env
 
 # testing
 ./web/coverage
@@ -25,3 +26,5 @@ yarn-error.log*
 
 
 #Custom Ignores
+/server/.env
+/opencvjs/node_modules

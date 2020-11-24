@@ -11,6 +11,7 @@ class FaceCapture{
     let videoStream = null;
     try {
       videoStream = await navigator.mediaDevices.getUserMedia(this.constraints);
+      console.log(videoStream);
       // Set the src of the video as the video stream.
       this.video.srcObject = videoStream;
       this.video.play();
@@ -24,19 +25,23 @@ class FaceCapture{
   }
 
   // Draws the image capture on to a canvas.
-  drawCanvas(canvas, imageBitmap) {
+  drawCanvas(imageBitmap) {
+    var canvas = document.createElement("canvas");
     canvas.width = 630;
     canvas.height = 500;
     canvas.getContext('2d').clearRect(0,0,canvas.width, canvas.height);
     canvas.getContext('2d').drawImage(imageBitmap, 0, 0, canvas.width, canvas.height);
+    const data = canvas.toDataURL();
+    console.log("image/jpeg");
+    console.log(data);
   }
 
   // Show the captured image on a canvas.
-  showCapture(canvas) {
+  showCapture() {
     this.imageCapture.takePhoto()
     .then(blob => createImageBitmap(blob))
     .then(imageBitmap => {
-      this.drawCanvas(canvas, imageBitmap);
+      this.drawCanvas(imageBitmap);
     })
     .catch(err => console.log(err));
   }

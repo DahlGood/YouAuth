@@ -3,6 +3,8 @@ import loginImage from "../../login.svg";
 import FaceCapture from "../../../node_modules/youauth/face_capture";
 const axios = require("axios");
 
+let faceCapture = null;
+
 //Importing environment variables from .env
 require("dotenv").config();
 const envVars = process.env;
@@ -14,6 +16,11 @@ export class Register extends React.Component {
 		this.handleSubmit = this.handleSubmit.bind(this);
 		//this.testVideo = this.testVideo.bind(this);
 	}
+
+	// setup(p5, canvasParentRef){
+	// 	p5.noCanvas;
+
+	// }
 
 	handleSubmit(event) {
 		event.preventDefault();
@@ -34,20 +41,30 @@ export class Register extends React.Component {
 	// 	this.
 	// }
 
+
+
 	testVideo(){
-		console.log("testing video function");
+		//console.log("testing video function");
+		//console.log(video);
 		let constraints = {
 			video: {
 			width: 630,
 			height: 500,
 			}
 		};
-
 		var video = document.querySelector('video');
-		//console.log(video);
 		var imageBitmap;
-		let faceCapture = new FaceCapture(constraints, video)
-		faceCapture.startStream();
+		faceCapture = new FaceCapture(constraints, video);
+		faceCapture.startStream();		
+		//faceCapture.testPrint();
+	}
+
+	testCapture(){
+		faceCapture.showCapture();
+	}
+
+	handleCapture(e){
+		this.testCapture();
 	}
 
 	handleVideo(e){
@@ -85,11 +102,13 @@ export class Register extends React.Component {
 
 						<button className="btn">Register</button>
 					</form>
-					<button onClick = {this.handleVideo.bind(this)}>Button video</button>
 					<video ></video>
-					
+					<button onClick = {this.handleVideo.bind(this)}>Button video</button>
+					<button onClick = {this.handleCapture.bind(this)}>Capture Image</button>
 				</div>
 			</div>
 		);
 	}
+	
 }
+

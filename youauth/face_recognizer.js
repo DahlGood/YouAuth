@@ -1,13 +1,16 @@
 const faceAPI = require('face-api.js');
+// tensorflow is optional, but makes the code run faster.
 const tf = require('@tensorflow/tfjs-node');
 const canvas = require('canvas');
 const fs = require('fs');
 const path = require('path');
 
-// Current model path. Needs to exist.
-const modelPath = './models';
+// Path to the face detection, face recognition, etc. models.
+const modelPath = path.resolve(__dirname, './models');
 
+// Use Nodejs wrappers for HTMLCanvasElement, HTMLImageElement, ImageData.
 const { Canvas, Image, ImageData } = canvas;
+// Patch the environment for face-api.js to use wrappers provided by canvas.
 faceAPI.env.monkeyPatch({ Canvas, Image, ImageData });
 
 // Loads the models for face-api. Must be called first before using api.
@@ -21,33 +24,36 @@ async function loadModels(){
 
 // Gather descriptive features of reference images.
 function labelDescriptors(labels, refImages){
+  /*
+   * labels is an array of names.
+   * refImages is an array of dataURLs or Image Objects.
+   *
+   * Reference images must have a singular face. Throws error is more than one face found.
+  */
   // Make sure labels and regImages are same length.
   if(labels.length !== refImages.length){
-    console.log('Labels and images not aligned!');
+    console.error('Labels and images not aligned!');
     return;
   }
+
+  const options = new faceAPI.SsdMobilenetv1Options({minConfidence:0.90});
+
   return Promise.all(
     // Return new array with LabeledFaceDescriptors(labels, descriptors(Float32Array));
     labels.map(async(label, i) =>{
       const img = await canvas.loadImage(refImages[i]);
-      const result = await faceAPI.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
-      // Warn if face detection is below a certain amount.
+      const result = await faceAPI.detectSingleFace(img, options).withFaceLandmarks().withFaceDescriptor();
+      /*
+        Add code to throw error if singular face confidence is low.
+      */
       if(result === undefined){
-        console.log('No faces detected in %s.', refImages[i]);
+        console.error('No faces detected in %s.', refImages[i]);
         return;
       }
       const faceDescriptor = [result.descriptor];
       return new faceAPI.LabeledFaceDescriptors(label, faceDescriptor);
     })
   );
-}
-
-// Saved the labeled face descriptors as a json file for later use.
-function saveDescriptors(labeledFaceDescriptors, filePath){
-  // stringify the array.
-  const jsonString = JSON.stringify(labeledFaceDescriptors);
-  // Write file to the path.
-  fs.writeFileSync(filePath, jsonString);
 }
 
 // Load the labeled descriptors from the json file.
@@ -71,14 +77,36 @@ function loadDescriptors(filePath){
 
 // Returns array of labels that were found in matches.
 function getMatchedLabels(matches){
+  /*
+   * matches is an array of FaceMatch objects from face-api.js.
+   * Each FaceMatch contains a string: label, and a number: distance.
+   * Example:
+   * [
+   *  FaceMatch { _label: 'person1', _distance: 0.35212970923781933 },
+   *  FaceMatch { _label: 'person2', _distance: 0.4249780266473695 }
+   * ]
+  */
+  // Create an array of labels that were found (aka not unknown).
   matchedLabels = [];
+  // For each FaceMatch object in matches.
   matches.forEach((match, i) => {
+    // Get the label of each match.
     label = match._label;
+    // By default unknown faces are labeled 'unknown'.
     if(label !== 'unknown'){
+      // Add the found label to the array.
       matchedLabels.push(label);
     }
   });
   return matchedLabels;
+}
+
+// Saved the labeled face descriptors as a json file for later use.
+function saveDescriptors(labeledFaceDescriptors, filePath){
+  // stringify the array.
+  const jsonString = JSON.stringify(labeledFaceDescriptors);
+  // Write file to the path.
+  fs.writeFileSync(filePath, jsonString);
 }
 
 // Save images to folder. Right now has a default path.

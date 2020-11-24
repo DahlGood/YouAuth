@@ -1,5 +1,5 @@
 // npm install 'path_to_youauth'.
-const youauth = require('./node_modules/youauth');
+const youauth = require('youauth');
 
 const jsonPath = './jsons/descriptor.json';
 
@@ -13,7 +13,7 @@ async function main(){
   // Load the descriptor.json file. Currently made with one photo of trump and biden.
   labeledFaceDescriptors = youauth.FaceRecognizer.loadDescriptors(jsonPath);
 
-  // Load the image that we want to detect faces in.
+  // Load the image that we want to detect faces in. Returns Image object from canvas.
   const testImage = await youauth.FaceRecognizer.loadImage('./images/test_image3.jpg');
 
   // Print to make sure an image was returned.
@@ -37,7 +37,7 @@ async function main(){
   // Draw the detections on image.
   const outputImage = youauth.FaceRecognizer.drawFaceDetections(matches, results, newImage);
 
-  // Convert to imageData.
+  // Convert to dataURL.
   imageData = outputImage.toDataURL('image/jpg');
 
   // Save file. Currently hard code to save in ./images.

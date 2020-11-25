@@ -1,4 +1,1 @@
-module.exports = {
-  FaceCapture: require("./face_capture"),
-  FaceRecognizer: require("./face_recognizer"),
-}
+module.exports = require("./face_recognizer");

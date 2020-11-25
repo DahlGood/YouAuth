@@ -22,8 +22,16 @@ async function loadModels(){
   return true;
 }
 
+// FaceRecognizer Object constructor.
+function FaceRecognizer(){
+  // Minimum confidence for valid face. Higher means less chance of wrong detections.
+  this.minConfidence = 0.9;
+  // Not sure what this does yet.
+  this.faceMatchConfidence = 0.8;
+}
+
 // Gather descriptive features of reference images.
-function labelDescriptors(labels, refImages){
+FaceRecognizer.prototype.labelDescriptors = function labelDescriptors(labels, refImages){
   /*
    * labels is an array of names.
    * refImages is an array of dataURLs or Image Objects.
@@ -35,11 +43,10 @@ function labelDescriptors(labels, refImages){
     console.error('Labels and images not aligned!');
     return;
   }
-
-  const options = new faceAPI.SsdMobilenetv1Options({minConfidence:0.90});
-
+  // Use SSD MobileNet Face Detection for higher accuracy.
+  const options = new faceAPI.SsdMobilenetv1Options({minConfidence: this.minConfidence });
+  // Return array of LabeledFaceDescriptors objects. Each has a label and a Float32Array (descriptors).
   return Promise.all(
-    // Return new array with LabeledFaceDescriptors(labels, descriptors(Float32Array));
     labels.map(async(label, i) =>{
       const img = await canvas.loadImage(refImages[i]);
       const result = await faceAPI.detectSingleFace(img, options).withFaceLandmarks().withFaceDescriptor();
@@ -57,7 +64,7 @@ function labelDescriptors(labels, refImages){
 }
 
 // Load the labeled descriptors from the json file.
-function loadDescriptors(filePath){
+FaceRecognizer.prototype.loadDescriptors = function loadDescriptors(filePath){
   // Read json strin from the json file.
   const jsonString = fs.readFileSync(filePath);
   // Parse the json.
@@ -76,7 +83,7 @@ function loadDescriptors(filePath){
 }
 
 // Returns array of labels that were found in matches.
-function getMatchedLabels(matches){
+FaceRecognizer.prototype.getMatchedLabels = function getMatchedLabels(matches){
   /*
    * matches is an array of FaceMatch objects from face-api.js.
    * Each FaceMatch contains a string: label, and a number: distance.
@@ -101,8 +108,23 @@ function getMatchedLabels(matches){
   return matchedLabels;
 }
 
+// Detects faces in image using face-api.js.
+FaceRecognizer.prototype.detect = async function detect(img){
+  const detectionResults = await faceAPI.detectAllFaces(img).withFaceLandmarks().withFaceDescriptors();
+  return detectionResults;
+}
+
+// Get the matches from face detection results using face-api.js.
+FaceRecognizer.prototype.getMatches = function getMatches(detectionResults, labeledFaceDescriptors){
+  // Create a faceMatcher using the labeled descriptors.
+  const faceMatcher = new faceAPI.FaceMatcher(labeledFaceDescriptors, this.faceMatchConfidence);
+  // Map the descriptors in the results with the descriptor of best match.
+  const matches = detectionResults.map(fd => faceMatcher.findBestMatch(fd.descriptor));
+  return matches;
+}
+
 // Saved the labeled face descriptors as a json file for later use.
-function saveDescriptors(labeledFaceDescriptors, filePath){
+FaceRecognizer.prototype.saveDescriptors = function saveDescriptors(labeledFaceDescriptors, filePath){
   // stringify the array.
   const jsonString = JSON.stringify(labeledFaceDescriptors);
   // Write file to the path.
@@ -110,7 +132,7 @@ function saveDescriptors(labeledFaceDescriptors, filePath){
 }
 
 // Save images to folder. Right now has a default path.
-function saveImageFile(fileName, imageData){
+FaceRecognizer.prototype.saveImageFile = function saveImageFile(fileName, imageData){
   // Remove the image data header.
   var data = imageData.replace(/^data:image\/\w+;base64,/, "");
   // Convert to buffer (sequence of bytes) from base64 (what the image data is encrypted as).
@@ -120,12 +142,12 @@ function saveImageFile(fileName, imageData){
 }
 
 // Wrapper for loadImage with canvas.
-async function loadImage(filePath){
-  return await canvas.loadImage(filePath);
+FaceRecognizer.prototype.loadImage = async function loadImage(filePath){
+  return canvas.loadImage(filePath);
 }
 
 // Draw matches on image.
-function drawFaceDetections(matches, results, outputImage){
+FaceRecognizer.prototype.drawFaceDetections = function drawFaceDetections(matches, results, outputImage){
   matches.forEach((match, i) => {
     const box = results[i].detection.box;
     const label = match.toString();
@@ -135,14 +157,12 @@ function drawFaceDetections(matches, results, outputImage){
   return outputImage;
 }
 
+function createCanvas(img){
+  return faceAPI.createCanvasFromMedia(img);
+}
+
 module.exports = {
-  saveImageFile: saveImageFile,
-  getMatchedLabels: getMatchedLabels,
-  loadDescriptors: loadDescriptors,
-  saveDescriptors: saveDescriptors,
-  labelDescriptors: labelDescriptors,
-  drawFaceDetections: drawFaceDetections,
-  loadImage: loadImage,
+  FaceRecognizer: FaceRecognizer,
+  createCanvas: createCanvas,
   loadModels: loadModels,
-  faceAPI: faceAPI,
 }

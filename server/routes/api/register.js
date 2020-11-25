@@ -1,45 +1,65 @@
-const validator = require('validator');
-const isEmpty = require('is-empty');
-//import "../../src/util";
-//require("../src/util")
+import React from "react";
+import loginImage from "../../login.svg";
 
-module.exports = function validateRegistration(input) {
-	let errors = {};
-	input.name = !isEmpty(input.fName) ? input.fName : "";
-	input.name = !isEmpty(input.lName) ? input.lName : "";
-	input.email = !isEmpty(input.email) ? input.email : "";
-	input.password = !isEmpty(input.password) ? input.password : "";
-	input.confirm_password = !isEmpty(input.confirm_password) ? input.confirm_password : "";
+const axios = require("axios");
 
-	if(validator.isEmpty(input.fName)) {
-		errors.fName = "You must enter a first name.";
+//Importing environment variables from .env
+require("dotenv").config();
+const envVars = process.env;
+const { REACT_APP_REGROUTE } = envVars;
+
+export class Register extends React.Component {
+	constructor(props) {
+		super(props);
+		this.handleSubmit = this.handleSubmit.bind(this);
 	}
 
-	if(validator.isEmpty(input.lName)) {
-		errors.lName = "You must enter a last name.";
+	handleSubmit(event) {
+		event.preventDefault();
+		const data = new FormData(event.target);
+		let userData = {
+			"fName": data.get("fName"),
+			"lName": data.get("lName"),
+			"email": data.get("email"),
+			"password": data.get("password"),
+			"confirm_password": data.get("confirm_password")
+		};
+
+		axios.post(REACT_APP_REGROUTE, userData).then(response => console.log(response)).catch(err => console.log(err));
+
 	}
 
-	if(validator.isEmpty(input.email) && validator.isEmail(input.email)) {
-		errors.email = "You must enter a valid email.";
+	render() {
+		return (
+			<div className="base-container">
+				<div className="header">Register</div>
+
+				<div className="content">
+					<div className="image">
+						<img src={loginImage} alt="" />
+					</div>
+
+					<form className="form" onSubmit={this.handleSubmit}>
+						<div className="form-group">
+							<input type="text" name="fName" placeholder="First Name" />
+						</div>
+						<div className="form-group">
+							<input type="text" name="lName" placeholder="Last Name" />
+						</div>
+						<div className="form-group">
+							<input type="text" name="email" placeholder="Email" />
+						</div>
+						<div className="form-group">
+							<input type="password" name="password" placeholder="Password" />
+						</div>
+						<div className="form-group">
+							<input type="password" name="confirm_password" placeholder="Confirm Password" />
+						</div>
+
+						<button className="btn">Register</button>
+					</form>
+				</div>
+			</div>
+		);
 	}
-
-	if(validator.isEmpty(input.password)) {
-		errors.password = "You must enter a password.";
-	}
-
-	if(validator.isEmpty(input.confirm_password)) {
-		errors.confirm_password = "You must confirm your password.";
-	}
-
-	if(!validator.equals(input.password, input.confirm_password)) {
-		errors.confirm_password = "Your passwords do not match."
-	}
-
-	/*
-	if(face data) {
-	}
-	*/
-
-	return {errors, valid: errors.length?true:false};
-
-};
+}

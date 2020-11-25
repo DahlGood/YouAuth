@@ -63,10 +63,8 @@ FaceRecognizer.prototype.labelDescriptors = function labelDescriptors(labels, re
   );
 }
 
-// Load the labeled descriptors from the json file.
-FaceRecognizer.prototype.loadDescriptors = function loadDescriptors(filePath){
-  // Read json strin from the json file.
-  const jsonString = fs.readFileSync(filePath);
+// Load the labeled descriptors from the JSON.stringified LabeledFaceDescriptors object.
+FaceRecognizer.prototype.loadDescriptors = function loadDescriptors(jsonString){
   // Parse the json.
   var contents = JSON.parse(jsonString);
   // Initialize new labeledFaceDescriptors array.

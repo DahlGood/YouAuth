@@ -40,12 +40,6 @@ class FaceCapture{
     })
     .catch(err => console.log(err));
   }
-
-  testPrint(){
-    console.log(this.imageCapture);
-    console.log(this.video);
-    console.log(this.constraints);
-  }
 }
 
 // Example of how to use.
@@ -72,4 +66,4 @@ function testFunction() {
   });
 }
 
-module.exports = FaceCapture;
+module.exports = {FaceCapture: FaceCapture};

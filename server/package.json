@@ -23,6 +23,7 @@
     "nodemon": "^2.0.6",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
-    "validator": "^13.1.17"
+    "validator": "^13.1.17",
+    "youauth": "file:../youauth"
   }
 }

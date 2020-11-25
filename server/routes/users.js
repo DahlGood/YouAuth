@@ -7,9 +7,13 @@ const bcrypt = require("bcryptjs");
 //Importing library for auth tokens.
 const jsonwebtoken = require("jsonwebtoken");
 
+//Importing youauth
+const {FaceRecognizer} = require("youauth");
+
 //Importing the api endpoints.
 const validateRegistration = require("./api/register");
 const validateLogin = require("./api/login");
+const validateFace = require("./api/train");
 
 //Importing environment variables from .env
 require("dotenv").config();
@@ -125,6 +129,45 @@ router.post("/login", jsonParser, (req, res) => {
 			}
 		});
 	});
+
+	return res.status(200);
+});
+
+router.post("/train", jsonParser, (req, res) => {
+
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	res.setHeader('Content-Type', 'application/json');
+
+	const { errors, notValid } = validateFace(req.body);
+
+	//If the registration input is not valid return an error code with the specific errors present.
+	if (notValid) {
+		return res.status(400).json(errors);
+	}
+
+	//Getting email and password the user entered from the request.
+	const email = req.body.email;
+	const face = req.body.face;
+
+	async () => {return await youauth.loadModels()}
+	let faceRec = new FaceRecognizer();
+
+	const labels = [email];
+	const refImages = [face];
+
+	let descriptors = faceRec.labelDescriptors(labels, refImages);
+	if(descriptors == undefined) {
+		return res.status(400).json({error: "Please take another photo."});
+	}
+	else {
+		res.json({
+			success: true,
+			desc: descriptors
+		});
+	}
+
+
+	//Searching db to see if a user with that email exists.
 
 	return res.status(200);
 });

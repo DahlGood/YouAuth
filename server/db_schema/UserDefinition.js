@@ -25,13 +25,12 @@ const UserSchema = new Schema({
 	date: {
 		type: Date,
 		default: Date.now
+	},	
+	faceDescriptors: {
+		type: Array,
+		required: false
 	}
-	/*
-	,
-	face something: {
-		how will we store face data?
-	}
-	*/
+
 });
 
 module.exports = UserDefinition = mongoose.model("users", UserSchema);

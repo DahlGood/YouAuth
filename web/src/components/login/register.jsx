@@ -1,7 +1,11 @@
 import React from "react";
 import loginImage from "../../login.svg";
 import FaceCapture from "../../../node_modules/youauth/face_capture";
+import {ToastContainer, toast, Zoom} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const axios = require("axios");
+
 
 let faceCapture = null;
 
@@ -33,8 +37,16 @@ export class Register extends React.Component {
 			"confirm_password": data.get("confirm_password")
 		};
 
-		axios.post(REACT_APP_REGROUTE, userData).then(response => console.log(response)).catch(err => console.log(err));
-
+		axios.post(REACT_APP_REGROUTE, userData).then(response => {
+			console.log(response);
+			toast.success("Registration successful!");
+			}).catch(err =>{
+			if(err && err.response && err.response.data){
+				console.log(err.response.data);
+				toast.error(err.response.data.error);
+			}			
+			});
+		
 	}
 
 	// export function testFunction(){
@@ -47,12 +59,12 @@ export class Register extends React.Component {
 		//console.log("testing video function");
 		//console.log(video);
 		let constraints = {
-			video: {
-			width: 630,
-			height: 500,
-			}
-		};
-		var video = document.querySelector('video');
+	video: {
+	width: 630,
+	height: 500,
+	}
+};
+var video = document.querySelector('video');
 		var imageBitmap;
 		faceCapture = new FaceCapture(constraints, video);
 		faceCapture.startStream();		
@@ -75,6 +87,11 @@ export class Register extends React.Component {
 	render() {
 		return (
 			<div className="base-container">
+				<ToastContainer
+					autoClose={7000}
+					className = "error-toast"
+					
+				/>
 				<div className="header">Register</div>
 
 				<div className="content">

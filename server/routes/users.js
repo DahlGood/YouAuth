@@ -36,7 +36,12 @@ router.post("/register", jsonParser, (req, res) => {
 	if (notValid) {
 		return res.status(400).json(errors);
 	}
-
+	if(req.body.password !== req.body.confirm_password){
+		return res
+			.status(400)
+			.json({ error: "Incorrect passwords entered dumbass" });
+	  }
+	
 	//Checking the database to see if the primary key (the email) is already present.
 	//Query documentation https://mongoosejs.com/docs/api/query.html#query_Query
 	//findOne() documentation - https://mongoosejs.com/docs/api/query.html#query_Query-findOne
@@ -46,7 +51,7 @@ router.post("/register", jsonParser, (req, res) => {
 		if (user) {
 			return res
 				.status(400)
-				.json({ email: "A user with that Email already exists." });
+				.json({ error: "A user with that Email already exists dumbass." });
 		} else {
 			const newUser = new User({
 				fName: req.body.fName,
@@ -96,7 +101,7 @@ router.post("/login", jsonParser, (req, res) => {
 		if (!user) {
 			return res
 				.status(401)
-				.json({ badEmail: "Invalid Email Address Entered." });
+				.json({ error: "Invalid Email Address idiot" });
 		}
 
 		//Hashes entered password and compares it with the one in the db.
@@ -121,7 +126,7 @@ router.post("/login", jsonParser, (req, res) => {
 					}
 				);
 			} else {
-				return res.status(400).json({ passCorrectness: "Invalid password entered." });
+				return res.status(400).json({ error: "Invalid password dumbass." });
 			}
 		});
 	});

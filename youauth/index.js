@@ -1,4 +1,5 @@
-module.exports = {
-  FaceCapture: require("./face_capture"),
-  FaceRecognizer: require("./face_recognizer")
-}
+// Merge objects into one export.
+module.exports = Object.assign({},
+  require("./face_recognizer"),
+  require("./face_capture"),
+);

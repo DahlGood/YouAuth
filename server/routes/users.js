@@ -13,7 +13,7 @@ const {FaceRecognizer} = require("youauth");
 //Importing the api endpoints.
 const validateRegistration = require("./api/register");
 const validateLogin = require("./api/login");
-const validateFace = require("./api/train");
+const validateFace = require("./api/checkFace");
 
 //Importing environment variables from .env
 require("dotenv").config();
@@ -133,7 +133,7 @@ router.post("/login", jsonParser, (req, res) => {
 	return res.status(200);
 });
 
-router.post("/train", jsonParser, (req, res) => {
+router.post("/check", jsonParser, (req, res) => {
 
 	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Content-Type', 'application/json');

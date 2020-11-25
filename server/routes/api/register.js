@@ -1,5 +1,4 @@
 const validator = require('validator');
-import "../../src/util"
 
 module.exports = function validateRegistration(input) {
 	let errors = {};

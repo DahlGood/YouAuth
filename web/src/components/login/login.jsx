@@ -1,6 +1,7 @@
 import React from "react";
 import loginImage from "../../login.svg";
-
+import {ToastContainer, toast, Zoom} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const axios = require("axios");
 
 //Importing environment variables from .env
@@ -22,12 +23,26 @@ export class Login extends React.Component {
 			"email": data.get("email"),
 			"password": data.get("password")
 		};
-		axios.post(REACT_APP_LOGINROUTE, userData).then(response => console.log(response)).catch(err => console.log(err));
+		//axios.post(REACT_APP_LOGINROUTE, userData).then(response => console.log(response)).catch(err => console.log(err));
+		axios.post(REACT_APP_LOGINROUTE, userData).then(response => {
+			console.log(response);
+			toast.success("Login successful!");
+			}).catch(err =>{
+			if(err && err.response && err.response.data){
+				console.log(err.response.data);
+				toast.error(err.response.data.error);
+			}			
+			});
 	}
 
 	render() {
 		return (
 			<div className="base-container">
+				<ToastContainer
+					autoClose={7000}
+					className = "error-toast"
+					
+				/>
 				<div className="header">Login</div>
 				<div className="content">
 					<div className="image">

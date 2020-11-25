@@ -3,6 +3,7 @@ class FaceCapture{
   constructor(constraints, video){
     this.constraints = constraints;
     this.video = video;
+
   }
 
   // start the video stream.

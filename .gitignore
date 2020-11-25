@@ -28,3 +28,4 @@ yarn-error.log*
 #Custom Ignores
 /server/.env
 /opencvjs/node_modules
+node_modules

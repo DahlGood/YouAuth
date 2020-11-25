@@ -1,7 +1,13 @@
 import React from "react";
 import loginImage from "../../login.svg";
+import FaceCapture from "../../../node_modules/youauth/face_capture";
+import {ToastContainer, toast, Zoom} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const axios = require("axios");
+
+
+let faceCapture = null;
 
 //Importing environment variables from .env
 require("dotenv").config();
@@ -12,7 +18,13 @@ export class Register extends React.Component {
 	constructor(props) {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
+		//this.testVideo = this.testVideo.bind(this);
 	}
+
+	// setup(p5, canvasParentRef){
+	// 	p5.noCanvas;
+
+	// }
 
 	handleSubmit(event) {
 		event.preventDefault();
@@ -25,13 +37,61 @@ export class Register extends React.Component {
 			"confirm_password": data.get("confirm_password")
 		};
 
-		axios.post(REACT_APP_REGROUTE, userData).then(response => console.log(response)).catch(err => console.log(err));
-
+		axios.post(REACT_APP_REGROUTE, userData).then(response => {
+			console.log(response);
+			toast.success("Registration successful!");
+			}).catch(err =>{
+			if(err && err.response && err.response.data){
+				console.log(err.response.data);
+				toast.error(err.response.data.error);
+			}			
+			});
+		
 	}
+
+	// export function testFunction(){
+	// 	this.
+	// }
+
+
+
+	testVideo(){
+		//console.log("testing video function");
+		//console.log(video);
+		let constraints = {
+	video: {
+	width: 630,
+	height: 500,
+	}
+};
+var video = document.querySelector('video');
+		var imageBitmap;
+		faceCapture = new FaceCapture(constraints, video);
+		faceCapture.startStream();		
+		//faceCapture.testPrint();
+	}
+
+	testCapture(){
+		faceCapture.showCapture();
+	}
+
+	handleCapture(e){
+		this.testCapture();
+	}
+
+	handleVideo(e){
+		this.testVideo();
+	}
+
 
 	render() {
 		return (
 			<div className="base-container">
+				<ToastContainer
+					autoClose={7000}
+					className = "error-toast"
+					
+				/>
 				<div className="header">Register</div>
 
 				<div className="content">
@@ -40,6 +100,7 @@ export class Register extends React.Component {
 					</div>
 
 					<form className="form" onSubmit={this.handleSubmit}>
+
 						<div className="form-group">
 							<input type="text" name="fName" placeholder="First Name" />
 						</div>
@@ -58,8 +119,13 @@ export class Register extends React.Component {
 
 						<button className="btn">Register</button>
 					</form>
+					<video ></video>
+					<button onClick = {this.handleVideo.bind(this)}>Button video</button>
+					<button onClick = {this.handleCapture.bind(this)}>Capture Image</button>
 				</div>
 			</div>
 		);
 	}
+	
 }
+

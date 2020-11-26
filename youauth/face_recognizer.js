@@ -54,7 +54,7 @@ FaceRecognizer.prototype.labelDescriptors = function labelDescriptors(labels, re
         Add code to throw error if singular face confidence is low.
       */
       if(result === undefined){
-        console.error('No faces detected in %s.', refImages[i]);
+        console.error('No faces detected in.');
         return;
       }
       const faceDescriptor = [result.descriptor];

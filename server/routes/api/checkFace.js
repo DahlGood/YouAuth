@@ -9,8 +9,8 @@ module.exports = function validateFace(input) {
 	if(validator.isEmpty(input.email) && validator.isEmail(input.email)) {
 		errors.fName = "You must enter a first name.";
 	}
-
-	if(validator.isEmpty(JSON.stringify(input.face[0]))) {
+	console.log(input.face);
+	if(validator.isEmpty(JSON.stringify(input.face))) {
 		errors.lName = "You must enter a last name.";
 	}
 

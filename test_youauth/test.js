@@ -19,6 +19,7 @@ async function main(){
   const refImages = ['./images/trump.jpg', './images/biden.jpg'];
 
   const labeledFaceDescriptors = await newRecognizer.labelDescriptors(labels, refImages);
+  console.log(labeledFaceDescriptors);
 
   // Load the image that we want to detect faces in. Returns Image object from canvas.
   const testImage = await newRecognizer.loadImage('./images/test_image3.jpg');

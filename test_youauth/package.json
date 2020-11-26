@@ -4,7 +4,7 @@
   "description": "testing youauth NOTE: youauth is not published yet, so install from local directory.",
   "main": "test.js",
   "dependencies": {
-    "youauth": "^1.0.0"
+    "youauth": "file:../youauth"
   },
   "devDependencies": {},
   "scripts": {

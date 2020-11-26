@@ -8,7 +8,9 @@ const bcrypt = require("bcryptjs");
 const jsonwebtoken = require("jsonwebtoken");
 
 //Importing youauth
-const {FaceRecognizer} = require("youauth");
+const youauth = require("youauth");
+
+const zlib = require("zlib");
 
 //Importing the api endpoints.
 const validateRegistration = require("./api/register");
@@ -62,6 +64,7 @@ router.post("/register", jsonParser, (req, res) => {
 				lName: req.body.lName,
 				email: req.body.email,
 				password: req.body.password,
+				faceDescriptors: req.body.face
 			});
 
 			//Look up salt rounds. This is just an excuse for a git compare
@@ -138,7 +141,7 @@ router.post("/login", jsonParser, (req, res) => {
 	return res.status(200);
 });
 
-router.post("/check", jsonParser, (req, res) => {
+router.post("/check", jsonParser, async (req, res) => {
 
 	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Content-Type', 'application/json');
@@ -149,19 +152,19 @@ router.post("/check", jsonParser, (req, res) => {
 	if (notValid) {
 		return res.status(400).json(errors);
 	}
-
 	//Getting email and password the user entered from the request.
 	const email = req.body.email;
-	const face = req.body.face;
-
-	async () => {return await youauth.loadModels()}
-	let faceRec = new FaceRecognizer();
+	const face = zlib.inflateSync(Buffer.from(req.body.face, "utf-8")).toString("utf-8");
 
 	const labels = [email];
 	const refImages = [face];
 
-	let descriptors = faceRec.labelDescriptors(labels, refImages);
-	if(descriptors == undefined) {
+	await youauth.loadModels().then(model => {console.log(model)}).catch(err => {console.log(err)});
+
+	const faceRec = new youauth.FaceRecognizer();
+
+	let descriptors = await faceRec.labelDescriptors(labels, refImages).then(descript => {return descript}).catch(err => {console.log(err)});
+	if(descriptors[0] === undefined) {
 		return res.status(400).json({error: "Please take another photo."});
 	}
 	else {

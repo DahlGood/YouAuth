@@ -33,7 +33,7 @@ server.use(
 	})
 );
 
-server.use(bodyParser.json());
+server.use(bodyParser.json({limit: "2MB", extended: true}));
 
 //Setting up DB connections.
 const db = MONGO_URI;

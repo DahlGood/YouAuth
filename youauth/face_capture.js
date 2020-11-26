@@ -32,7 +32,8 @@ class FaceCapture{
   }
 
   // Take a picture of the current video.
-  takePicture(canvas){
+  takePicture(){
+    const canvas = document.createElement("canvas");
     this.drawCanvas(canvas, this.video);
     // Return data URL of the loaded image.
     return canvas.toDataURL('image/jpg');

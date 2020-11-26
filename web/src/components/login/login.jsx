@@ -61,13 +61,12 @@ export class Login extends React.Component {
 	handleCapture(e){
 		
 		let compressedImage = zlib.deflateSync(faceCapture.takePicture());
-
 		let shortUserData = {
 			email: document.getElementById("email").value,
 			face: compressedImage
 		}
 		axios.post(REACT_APP_LOGINROUTE, shortUserData).then(response => {
-			toast.success("Image Capture Successful!");
+			toast.success(response.data);
 		}).catch(err => {
 			if(err && err.response && err.response.data){
 				console.log(err.response.data);
@@ -92,7 +91,7 @@ export class Login extends React.Component {
 					</div>
 					<form className="form" onSubmit={this.handleSubmit}>
 						<div className="form-group">
-							<input type="text" name="email" placeholder="Email" />
+							<input type="text" name="email" placeholder="Email" id ="email" />
 						</div>
 						<div className="form-group">
 							<input type="password" name="password" placeholder="Password" />

@@ -30,7 +30,8 @@ export class Login extends React.Component {
 		const data = new FormData(event.target);
 		let userData = {
 			"email": data.get("email"),
-			"password": data.get("password")
+			"password": data.get("password"),
+			"face" : this.state.face
 		};
 		//axios.post(REACT_APP_LOGINROUTE, userData).then(response => console.log(response)).catch(err => console.log(err));
 		axios.post(REACT_APP_LOGINROUTE, userData).then(response => {
@@ -61,19 +62,8 @@ export class Login extends React.Component {
 	handleCapture(e){
 		
 		let compressedImage = zlib.deflateSync(faceCapture.takePicture());
-		let shortUserData = {
-			email: document.getElementById("email").value,
-			face: compressedImage
-		}
-		axios.post(REACT_APP_LOGINROUTE, shortUserData).then(response => {
-			toast.success(response.data);
-		}).catch(err => {
-			if(err && err.response && err.response.data){
-				console.log(err.response.data);
-				toast.error(err.response.data.error);
-			}			
-		});
-
+		this.state.face = compressedImage;
+		toast.success("Image capture successful, try to login");
 	}
 
 	render() {
@@ -82,7 +72,6 @@ export class Login extends React.Component {
 				<ToastContainer
 					autoClose={7000}
 					className = "error-toast"
-					
 				/>
 				<div className="header">Login</div>
 				<div className="content">

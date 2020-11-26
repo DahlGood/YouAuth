@@ -90,7 +90,6 @@ export class Register extends React.Component {
 				<ToastContainer
 					autoClose={6000}
 					className = "error-toast"
-					
 				/>
 				<div className="header">Register</div>
 

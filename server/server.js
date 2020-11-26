@@ -20,8 +20,8 @@ require("dotenv").config();
 const cors = require("cors");
 
 //Getting environment variables from .env in /server
-const envVars = process.env;
-const { MONGO_URI, PORT } = envVars;
+const envVars = require('dotenv').config({ path: require('find-config')('.env') });
+const { MONGO_URI, PORT } = envVars.parsed;
 
 //Setting up server.
 const server = express();
@@ -47,7 +47,7 @@ mongoose
 //Passport stuff
 server.use(passport.initialize());
 
-require("./config/passport")(passport);
+//require("./config/passport")(passport);
 
 //CORS middleware stuff.
 server.use(cors());
@@ -55,6 +55,6 @@ server.use(cors());
 //Routes
 server.use("/users", users);
 
-server.listen(envVars.PORT, () => {
-	console.log("Server running on port: " + envVars.PORT);
+server.listen(PORT, () => {
+	console.log("Server running on port: " + PORT);
 });

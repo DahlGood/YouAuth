@@ -91,7 +91,7 @@ router.post("/register", jsonParser, (req, res) => {
 router.post("/login", jsonParser, (req, res) => {
 	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Content-Type', 'application/json');
-
+	console.log(req.body);
 	const { errors, notValid } = validateLogin(req.body);
 	//If the registration input is not valid return an error code with the specific errors present.
 	if (notValid) {
@@ -104,7 +104,7 @@ router.post("/login", jsonParser, (req, res) => {
 	const email = req.body.email;
 	const face = zlib.inflateSync(Buffer.from(req.body.face, "utf-8")).toString("utf-8"); 
 	const password = req.body.password;
-	console.log("hello lucas");
+	//console.log("hello lucas");
 	//Searching db to see if a user with that email exists.
 	User.findOne({ email }).then( async (user) => {
 		if (!user) {
@@ -118,19 +118,19 @@ router.post("/login", jsonParser, (req, res) => {
 		const faceRec = new youauth.FaceRecognizer();
 		let loadedImage = await faceRec.loadImage(face);
 		let detectedResults = await faceRec.detect(loadedImage);
-		console.log(user.faceDescriptors);
+		console.log(detectedResults);
 		let labeledFaceDescriptors = faceRec.loadDescriptors(JSON.stringify(user.faceDescriptors));
 		let matches = faceRec.getMatches(detectedResults,labeledFaceDescriptors);
 		let matchedLabels = faceRec.getMatchedLabels(matches);
 		if (isEmpty(matchedLabels)){
 			return res
 			.status(401)
-			.json({ error: "Faces do not match" });
+			.json({ error: "Faces do not match, try again" });
 		}
 
 		else{
 			console.log("Correct");
-			res.json({test:"It worked"});
+			res.json({ success:"Login succesful!" });
 			return res
 			.status(200);
 		}

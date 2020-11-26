@@ -29,6 +29,7 @@ const User = require("../db_schema/UserDefinition");
 const { ExtractJwt } = require("passport-jwt");
 
 const bodyParser = require("body-parser");
+const isEmpty = require("is-empty");
 let jsonParser = bodyParser.json();
 
 router.post("/register", jsonParser, (req, res) => {
@@ -101,15 +102,33 @@ router.post("/login", jsonParser, (req, res) => {
 
 	//Getting email and password the user entered from the request.
 	const email = req.body.email;
+	const face = req.body.face; 
 	const password = req.body.password;
 
 	//Searching db to see if a user with that email exists.
-	User.findOne({ email }).then((user) => {
+	User.findOne({ email }).then( async (user) => {
 		if (!user) {
 			return res
 				.status(401)
 				.json({ error: "Invalid Email Address idiot" });
 		}
+		await youauth.loadModels().then(model => {console.log(model)}).catch(err => {console.log(err)});
+
+		const faceRec = new youauth.FaceRecognizer();
+		let loadedImage = await faceRec.loadImage(face);
+		let detectedResults = await faceRec.detect(loadedImage);
+		let decompressedUser = zlib.inflateSync(Buffer.from(face, "utf-8")).toString("utf-8");
+		console.log(decompressedUser);
+		let labeledFaceDescriptors = faceRec.loadDescriptors(decompressedUser);
+		let matches = faceRec.getMatches(detectedResults,labeledFaceDescriptors);
+		let matchedLabels = faceRec.getMatchedLabels(matches);
+		if (isEmpty(matchedLabels)){
+			return res
+			.status(400)
+			.json({ error: "Faces do not match" });
+		}
+
+
 
 		//Hashes entered password and compares it with the one in the db.
 		bcrypt.compare(password, user.password).then((match) => {
@@ -164,6 +183,7 @@ router.post("/check", jsonParser, async (req, res) => {
 	const faceRec = new youauth.FaceRecognizer();
 
 	let descriptors = await faceRec.labelDescriptors(labels, refImages).then(descript => {return descript}).catch(err => {console.log(err)});
+	//console.log(descriptors);
 	if(descriptors[0] === undefined) {
 		return res.status(400).json({error: "Please take another photo."});
 	}

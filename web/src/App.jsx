@@ -1,6 +1,6 @@
 import React from "react";
 import "./styles/app.scss";
-import { Panel} from "./components/index";
+import { Panel } from "./components/index";
 
 export default class App extends React.Component {
 	constructor(props) {

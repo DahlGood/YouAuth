@@ -1,20 +1,23 @@
 //.login
-.panell {
+.panel {
     
-    //.container
-    min-height: 42em;
-    background-color: #fff;
-    box-shadow: 0px 0px 12px 2px rgba(15, 15, 15, 0.2);
-    border-radius: 4px;
-
-    &.login {
-        transition: all 450ms ease-in-out;
-        height: 45em;
-    }
-
-    &.register {
-        transition: all 450ms ease-in-out;
-        height: 50em;
-    }
+    // width: 27em;
+	// // height: 40em;
+	// //min-height: 44em;
+	// display: flex;
+	// justify-content: center;
+	// //align-items: center;
+	// position: relative;
+    // z-index: 99;
+    
+    // .panel {
+	width: 27em ;
+	transition: all 450ms ease-in-out;
+	//height: 45em;
+	min-height: 44em;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: relative;
 
 }

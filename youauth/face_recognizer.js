@@ -10,7 +10,6 @@ const modelPath = path.resolve(__dirname, './models');
 // Use Nodejs wrappers for HTMLCanvasElement, HTMLImageElement, ImageData.
 const { Canvas, Image, ImageData } = canvas;
 // Patch the environment for face-api.js to use wrappers provided by canvas.
-
 faceAPI.env.monkeyPatch({ Canvas, Image, ImageData });
 
 // Loads the models for face-api. Must be called first before using api.

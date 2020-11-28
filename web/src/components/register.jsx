@@ -87,7 +87,6 @@ export class Register extends React.Component {
 		});
 
 	}
-
 	render() {
 		return (
 
@@ -115,6 +114,9 @@ export class Register extends React.Component {
 
 						<button className="button">Register</button>
 					</form>
+					
+					<button onClick = {this.handleVideo.bind(this)}>Button video</button>
+					<button onClick = {this.handleCapture.bind(this)}>Capture Image</button>
 					<Footer />
 				</div>
 

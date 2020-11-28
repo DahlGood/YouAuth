@@ -10,6 +10,7 @@ export class Panel extends Component {
 		super(props);
 		this.state = {
             position: 0,
+            hasVideo: 0
         }
     }
 

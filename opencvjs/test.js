@@ -1,1 +1,0 @@
-const cv = require('opencvnodejs');

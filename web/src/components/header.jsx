@@ -7,7 +7,7 @@ export class Header extends Component {
     render() {
         return (
             <div className="header">
-                Login/Register
+                {this.props.position ? "Login":"Register"}
             </div>
         )
     }

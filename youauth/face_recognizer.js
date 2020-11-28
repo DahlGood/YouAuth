@@ -1,4 +1,5 @@
 const faceAPI = require('face-api.js');
+// Not required, but makes the code faster by connecting to a tensoflow node backend.
 const tf = require('@tensorflow/tfjs-node');
 const canvas = require('canvas');
 const fs = require('fs');
@@ -23,10 +24,12 @@ async function loadModels(){
 
 // FaceRecognizer Object constructor.
 function FaceRecognizer(){
-  // Minimum confidence for valid face. Higher means less chance of wrong detections.
+  // Minimum confidence for valid face. Higher means less chance of bad face detections (less accurate face descriptors).
   this.minConfidence = 0.9;
-  // Not sure what this does yet.
-  this.faceMatchConfidence = 0.5;
+  // The euclidean distance threshold. Lower means faceMatcher will look for more accurate match.
+  this.distanceThreshold = 0.5;
+  // Use SSD MobileNet Face Detection for higher accuracy. Uses minConfidence to set face detection threshold.
+  this.options = new faceAPI.SsdMobilenetv1Options({minConfidence: this.minConfidence });
 }
 
 // Gather descriptive features of reference images.
@@ -34,29 +37,40 @@ FaceRecognizer.prototype.labelDescriptors = function labelDescriptors(labels, re
   /*
    * labels is an array of names.
    * refImages is an array of dataURLs or Image Objects.
-   *
-   * Reference images must have a singular face. Throws error is more than one face found.
+   * Will detect single face of highest confidence in each image. Throws error if no face is found.
+   * The descriptor (Float32Array) can be thought of as extracted facial embeddings.
+   * Example of returned result:
+   * [
+   *  LabeledFaceDescriptors {
+   *    _label: 'person1',
+   *    _descriptors: [ [Float32Array] ]
+   *  },
+   *  LabeledFaceDescriptors {
+   *    _label: 'person2',
+   *    _descriptors: [ [Float32Array] ]
+   *  }
+   * ]
   */
   // Make sure labels and regImages are same length.
   if(labels.length !== refImages.length){
     console.error('Labels and images not aligned!');
     return;
   }
-  // Use SSD MobileNet Face Detection for higher accuracy.
-  const options = new faceAPI.SsdMobilenetv1Options({minConfidence: this.minConfidence });
   // Return array of LabeledFaceDescriptors objects. Each has a label and a Float32Array (descriptors).
   return Promise.all(
     labels.map(async(label, i) =>{
+      // Create Image object from dataURL or the filePath.
       const img = await canvas.loadImage(refImages[i]);
-      const result = await faceAPI.detectSingleFace(img, options).withFaceLandmarks().withFaceDescriptor();
-      /*
-        Add code to throw error if singular face confidence is low.
-      */
+      // Use face-api.js to detect a single face. Returns face of highest confidence even if multiple faces detected.
+      const result = await faceAPI.detectSingleFace(img, this.options).withFaceLandmarks().withFaceDescriptor();
+      // If no face detected, or confidence is too low, return undefined.
       if(result === undefined){
-        console.error('No faces detected in.');
+        console.error('No faces detected.');
         return;
       }
+      // Fetch the descriptor value (face embeddings) of result.
       const faceDescriptor = [result.descriptor];
+      // Create new LabeledFaceDescriptors object using the associated label and face descriptor.
       return new faceAPI.LabeledFaceDescriptors(label, faceDescriptor);
     })
   );
@@ -64,6 +78,13 @@ FaceRecognizer.prototype.labelDescriptors = function labelDescriptors(labels, re
 
 // Load the labeled descriptors from the JSON.stringified LabeledFaceDescriptors object.
 FaceRecognizer.prototype.loadDescriptors = function loadDescriptors(jsonString){
+  /*
+   * Contents example (what the array contents should look like after parsing):
+   * [
+   *  { label: 'person1', descriptors: [ [Array] ] },
+   *  { label: 'person2', descriptors: [ [Array] ] }
+   * ]
+  */
   // Parse the json.
   var contents = JSON.parse(jsonString);
   // Initialize new labeledFaceDescriptors array.
@@ -107,14 +128,15 @@ FaceRecognizer.prototype.getMatchedLabels = function getMatchedLabels(matches){
 
 // Detects faces in image using face-api.js.
 FaceRecognizer.prototype.detect = async function detect(img){
-  const detectionResults = await faceAPI.detectAllFaces(img).withFaceLandmarks().withFaceDescriptors();
+  // Detect all faces that aren't below the minConfidence threshold.
+  const detectionResults = await faceAPI.detectAllFaces(img, this.options).withFaceLandmarks().withFaceDescriptors();
   return detectionResults;
 }
 
 // Get the matches from face detection results using face-api.js.
 FaceRecognizer.prototype.getMatches = function getMatches(detectionResults, labeledFaceDescriptors){
   // Create a faceMatcher using the labeled descriptors.
-  const faceMatcher = new faceAPI.FaceMatcher(labeledFaceDescriptors, this.faceMatchConfidence);
+  const faceMatcher = new faceAPI.FaceMatcher(labeledFaceDescriptors, this.distanceThreshold);
   // Map the descriptors in the results with the descriptor of best match.
   const matches = detectionResults.map(fd => faceMatcher.findBestMatch(fd.descriptor));
   return matches;
@@ -143,17 +165,25 @@ FaceRecognizer.prototype.loadImage = async function loadImage(filePath){
   return canvas.loadImage(filePath);
 }
 
-// Draw matches on image.
-FaceRecognizer.prototype.drawFaceDetections = function drawFaceDetections(matches, results, outputImage){
+/* Draw matches on image. Takes matches from getMatches() and results from detect().
+   The outputCanvas is from createCanvas().
+   Handy for seeing the outcome of the detection results. */
+FaceRecognizer.prototype.drawFaceDetections = function drawFaceDetections(matches, results, outputCanvas){
+  // For each match object in matches.
   matches.forEach((match, i) => {
+    // Grab associated bounding box from the face detection in results.
     const box = results[i].detection.box;
+    // Get label associated with match. Unknown faces with no label are 'unknown' by default.
     const label = match.toString();
+    // Create new DrawBox object with the bounding box and the label.
     const drawBox = new faceAPI.draw.DrawBox(box, {label:label});
-    drawBox.draw(outputImage);
+    // Draw onto the output canvas.
+    drawBox.draw(outputCanvas);
   });
-  return outputImage;
+  return outputCanvas;
 }
 
+// Creates a canvas from an Image object provided by the canvas module.
 function createCanvas(img){
   return faceAPI.createCanvasFromMedia(img);
 }

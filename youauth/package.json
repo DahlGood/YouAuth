@@ -1,20 +1,20 @@
 {
   "name": "youauth",
   "version": "1.0.0",
-  "description": "Login authentication using opencv.",
+  "description": "Login authentication using facial recognition.",
   "main": "index.js",
-  "dependencies": {
-    "opencv4nodejs": "^5.6.0"
-  },
-  "devDependencies": {
-    "opencv4nodejs": "^5.6.0"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "opencv"
+    "face_recognition",
+    "face-api.js"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^1.7.0",
+    "canvas": "^2.6.1",
+    "face-api.js": "^0.22.2"
+  }
 }

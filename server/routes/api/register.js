@@ -1,7 +1,5 @@
 const validator = require('validator');
 const isEmpty = require('is-empty');
-//import "../../src/util";
-//require("../src/util")
 
 module.exports = function validateRegistration(input) {
 	let errors = {};
@@ -35,10 +33,6 @@ module.exports = function validateRegistration(input) {
 		errors.confirm_password = "Your passwords do not match."
 	}
 
-	/*
-	if(face data) {
-	}
-	*/
 
 	return {errors, valid: errors.length?true:false};
 

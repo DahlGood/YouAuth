@@ -26,7 +26,7 @@ function FaceRecognizer(){
   // Minimum confidence for valid face. Higher means less chance of wrong detections.
   this.minConfidence = 0.9;
   // Not sure what this does yet.
-  this.faceMatchConfidence = 0.8;
+  this.faceMatchConfidence = 0.5;
 }
 
 // Gather descriptive features of reference images.

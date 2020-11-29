@@ -15,7 +15,8 @@ module.exports = function validateLogin(input) {
 	console.log("This is validator: ", validator.isEmpty(input.password));
 	console.log("This is inputFace length: ", input.face.toString('utf-8').length==0);
 
-	if (validator.isEmpty(input.password) || (input.face.toString('utf-8').length==0)) {
+ 	// Login with either a password or face.
+	if (validator.isEmpty(input.password) && (input.face.toString('utf-8').length==0)) {
 		errors.password = "Please enter a password or select a face-capture for login!";
 	}
 

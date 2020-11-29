@@ -17,7 +17,7 @@ module.exports = function validateRegistration(input) {
 		errors.lName = "You must enter a last name.";
 	}
 
-	if(validator.isEmpty(input.email) && validator.isEmail(input.email)) {
+	if(validator.isEmpty(input.email) || !validator.isEmail(input.email)) {
 		errors.email = "You must enter a valid email.";
 	}
 

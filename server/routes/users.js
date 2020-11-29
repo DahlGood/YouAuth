@@ -46,13 +46,12 @@ router.post("/register", jsonParser, (req, res) => {
 	const { errors, notValid } = validateRegistration(req.body);
 
 	//If the registration input is not valid return an error code with the specific errors present.
-	if (notValid) {
-		return res.status(400).json(errors);
+	errorMessage = '';
+	if(!isEmpty(errors)){
+		errorMessage += errors[Object.keys(errors)[0]];
 	}
-	if(req.body.password !== req.body.confirm_password){
-		return res
-			.status(400)
-			.json({ error: "Incorrect passwords entered dumbass" });
+	if (notValid) {
+		return res.status(400).json({ error: errorMessage });
 	}
 
 	//Checking the database to see if the primary key (the email) is already present.
@@ -100,68 +99,58 @@ router.post("/login", jsonParser, (req, res) => {
 	console.log(req.body);
 	const { errors, notValid } = validateLogin(req.body);
 	//If the registration input is not valid return an error code with the specific errors present.
+	errorMessage = '';
+	if(!isEmpty(errors)){
+		errorMessage += errors[Object.keys(errors)[0]];
+	}
 	if (notValid) {
-		return res
-		.status(401)
-		.json(errors);
+		return res.status(401).json({ error: errorMessage });
 	}
 
 	//Getting email and password the user entered from the request.
 	const email = req.body.email;
-	const face = zlib.inflateSync(Buffer.from(req.body.face, "utf-8")).toString("utf-8");
 	const password = req.body.password;
-	//Searching db to see if a user with that email exists.
-	User.findOne({ email }).then( async (user) => {
-		if (!user) {
-			return res
-				.status(400)
-				.json({ error: "Invalid Email Address idiot" });
-		}
-
-		const faceRec = new youauth.FaceRecognizer();
-		let loadedImage = await faceRec.loadImage(face);
-		let detectedResults = await faceRec.detect(loadedImage);
-		let labeledFaceDescriptors = faceRec.loadDescriptors(JSON.stringify(user.faceDescriptors));
-		let matches = faceRec.getMatches(detectedResults,labeledFaceDescriptors);
-		let matchedLabels = faceRec.getMatchedLabels(matches);
-		if (isEmpty(matchedLabels)){
-			return res
-			.status(401)
-			.json({ error: "Faces do not match, try again" });
-		}
-		else{
+	if(!isEmpty(req.body.face)){
+		const face = zlib.inflateSync(Buffer.from(req.body.face, "utf-8")).toString("utf-8");
+		//Searching db to see if a user with that email exists.
+		User.findOne({ email }).then( async (user) => {
+			if (!user) {
+				return res
+					.status(400)
+					.json({ error: "Invalid Email Address idiot" });
+			}
+			const faceRec = new youauth.FaceRecognizer();
+			let loadedImage = await faceRec.loadImage(face);
+			let detectedResults = await faceRec.detect(loadedImage);
+			let labeledFaceDescriptors = faceRec.loadDescriptors(JSON.stringify(user.faceDescriptors));
+			let matches = faceRec.getMatches(detectedResults,labeledFaceDescriptors);
+			let matchedLabels = faceRec.getMatchedLabels(matches);
+			if (isEmpty(matchedLabels)){
+				return res
+				.status(401)
+				.json({ error: "Faces do not match, try again" });
+			}
+			else{
+				console.log("Correct");
+				res.json({ success:"Login succesful!" });
+				return res
+				.status(200);
+			}
+		});
+	}
+	else{
+		User.findOne({ email }).then( async (user) => {
+			if (!user) {
+				return res
+					.status(400)
+					.json({ error: "Invalid Email Address idiot" });
+			}
 			console.log("Correct");
 			res.json({ success:"Login succesful!" });
 			return res
 			.status(200);
-		}
-
-		//Hashes entered password and compares it with the one in the db.
-		// bcrypt.compare(password, user.password).then((match) => {
-		// 	//If the password matches generate a payload of user id and password (what does the payload do? research more jwt stuff.)
-		// 	if (match) {
-		// 		const payload = {
-		// 			id: user.id,
-		// 			email: user.email,
-		// 		};
-
-		// 		//Sign the token with the payload, secret key, and expiration time.
-		// 		jsonwebtoken.sign(
-		// 			payload,
-		// 			SECRET_KEY,
-		// 			{ expiresIn: 31556926 },
-		// 			(err, token) => {
-		// 				res.json({
-		// 					success: true,
-		// 					token: "Bearer " + token,
-		// 				});
-		// 			}
-		// 		);
-		// 	} else {
-		// 		return res.status(400).json({ error: "Invalid password dumbass." });
-		// 	}
-		// });
-	});
+		});
+	}
 
 	return res.status(200);
 });
@@ -184,8 +173,6 @@ router.post("/check", jsonParser, async (req, res) => {
 	const labels = [email];
 	const refImages = [face];
 
-	await youauth.loadModels().then(model => {console.log(model)}).catch(err => {console.log(err)});
-
 	const faceRec = new youauth.FaceRecognizer();
 
 	let descriptors = await faceRec.labelDescriptors(labels, refImages).then(descript => {return descript}).catch(err => {console.log(err)});
@@ -199,8 +186,6 @@ router.post("/check", jsonParser, async (req, res) => {
 			desc: descriptors
 		});
 	}
-
-
 	//Searching db to see if a user with that email exists.
 
 	return res.status(200);

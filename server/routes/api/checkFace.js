@@ -7,13 +7,11 @@ module.exports = function validateFace(input) {
 	input.face = !isEmpty(input.face) ? input.face : "";
 
 	if(validator.isEmpty(input.email) && validator.isEmail(input.email)) {
-		errors.fName = "You must enter a first name.";
+		errors.email = "You must enter a email.";
 	}
-	console.log(input.face);
 	if(validator.isEmpty(JSON.stringify(input.face))) {
-		errors.lName = "You must enter a last name.";
+		errors.face = "You must enter a face.";
 	}
 
-	return {errors, valid: errors.length?true:false};
-
+	return {errors, notValid: Object.keys(errors).length ? true:false};
 };

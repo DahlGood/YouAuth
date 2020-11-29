@@ -33,7 +33,5 @@ module.exports = function validateRegistration(input) {
 		errors.confirm_password = "Your passwords do not match."
 	}
 
-
-	return {errors, valid: errors.length?true:false};
-
+	return {errors, notValid: Object.keys(errors).length ? true:false};
 };

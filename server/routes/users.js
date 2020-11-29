@@ -32,6 +32,12 @@ const bodyParser = require("body-parser");
 const isEmpty = require("is-empty");
 let jsonParser = bodyParser.json();
 
+async function load(){
+	await youauth.loadModels().then(model => {console.log(model)}).catch(err => {console.log(err)});
+}
+
+load();
+
 router.post("/register", jsonParser, (req, res) => {
 
 	res.setHeader('Access-Control-Allow-Origin', '*');
@@ -47,8 +53,8 @@ router.post("/register", jsonParser, (req, res) => {
 		return res
 			.status(400)
 			.json({ error: "Incorrect passwords entered dumbass" });
-	  }
-	
+	}
+
 	//Checking the database to see if the primary key (the email) is already present.
 	//Query documentation https://mongoosejs.com/docs/api/query.html#query_Query
 	//findOne() documentation - https://mongoosejs.com/docs/api/query.html#query_Query-findOne
@@ -102,9 +108,8 @@ router.post("/login", jsonParser, (req, res) => {
 
 	//Getting email and password the user entered from the request.
 	const email = req.body.email;
-	const face = zlib.inflateSync(Buffer.from(req.body.face, "utf-8")).toString("utf-8"); 
+	const face = zlib.inflateSync(Buffer.from(req.body.face, "utf-8")).toString("utf-8");
 	const password = req.body.password;
-	//console.log("hello lucas");
 	//Searching db to see if a user with that email exists.
 	User.findOne({ email }).then( async (user) => {
 		if (!user) {
@@ -112,13 +117,10 @@ router.post("/login", jsonParser, (req, res) => {
 				.status(400)
 				.json({ error: "Invalid Email Address idiot" });
 		}
-		await youauth.loadModels().then(model => {console.log(model)}).catch(err => {console.log(err)});
-		
 
 		const faceRec = new youauth.FaceRecognizer();
 		let loadedImage = await faceRec.loadImage(face);
 		let detectedResults = await faceRec.detect(loadedImage);
-		console.log(detectedResults);
 		let labeledFaceDescriptors = faceRec.loadDescriptors(JSON.stringify(user.faceDescriptors));
 		let matches = faceRec.getMatches(detectedResults,labeledFaceDescriptors);
 		let matchedLabels = faceRec.getMatchedLabels(matches);
@@ -127,15 +129,12 @@ router.post("/login", jsonParser, (req, res) => {
 			.status(401)
 			.json({ error: "Faces do not match, try again" });
 		}
-
 		else{
 			console.log("Correct");
 			res.json({ success:"Login succesful!" });
 			return res
 			.status(200);
 		}
-
-
 
 		//Hashes entered password and compares it with the one in the db.
 		// bcrypt.compare(password, user.password).then((match) => {

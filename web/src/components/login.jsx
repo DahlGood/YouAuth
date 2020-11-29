@@ -2,7 +2,7 @@ import React from "react";
 import "../styles/account.scss"
 import "../styles/login.scss"
 import faceIcon from "../Camera-icon.png"
-import { Header, Media, Input, Footer, Button, Type } from "./index";
+import { Header, Media, Footer, Video } from "./index";
 import {FaceCapture} from "../../node_modules/youauth/face_capture";
 
 import {ToastContainer, toast, Zoom} from 'react-toastify';
@@ -20,7 +20,8 @@ export class Login extends React.Component {
 		super(props);
 		this.handleSubmit = this.handleSubmit.bind(this);
 		this.state = {
-			face: null
+			face: null,
+			mediaSelected: 0
 		}
 	}
 
@@ -46,11 +47,15 @@ export class Login extends React.Component {
 	}
 
 
-handleVideo(e){
+	async handleVideo(e){
+		console.log("Done Handling Video");
+		
+		await this.updateVideo();
+		
 		let constraints = {
 			video: {
-				width: 630,
-				height: 500
+				width: 271.989,
+				height: 189
 			}
 		};
 
@@ -58,10 +63,15 @@ handleVideo(e){
 		var imageBitmap;
 		faceCapture = new FaceCapture(constraints, video);
 		faceCapture.startStream();
+		console.log("Done Handling Video");
+	}
+
+	updateVideo() {
+		this.setState(this.state.mediaSelected ? {mediaSelected:0}:{mediaSelected:1});
 	}
 
 
-	handleCapture(e){
+	handleCapture(){
 		
 		let compressedImage = zlib.deflateSync(faceCapture.takePicture());
 
@@ -77,7 +87,9 @@ handleVideo(e){
 			<div className="accounts login">
 				<div className="">
 					<Header position={1} />
-					<Media />
+					<div className="media" style={{minHeight:"192px",minWidth:"272px"}}>
+						{this.state.mediaSelected?<Video cap={this.handleCapture.bind(this)} />:<Media />}
+					</div>
 					<ToastContainer autoClose={6000} className = "error-toast" />
 					{/* This form could be placed in the Input component and have all input elements mapped and displayed automatically. */}
 					<div className="input">
@@ -85,14 +97,12 @@ handleVideo(e){
 						<div className="form-group">
 							<input type="text" name="email" placeholder="Email" id ="email"/>
 						</div>
-						<div className="form-group" style= {{flexDirection:"row"}}>
-							<input type="password" name="password" placeholder="Password" />
-							<button className = "camera"><img src = {faceIcon}/></button>
+						<div className="form-group" style= {{position:"relative"}}>
+							<input type="password" name="password" placeholder="Password" style={{position:"relative"}}/>
+							<button type="button" onClick = {this.handleVideo.bind(this)} className = "camera" style={{marginLeft:"85%", marginTop:"2%", position:"absolute"} }><img src = {faceIcon}/></button>
 						</div>
-						<button className="button">Login</button>
+						<button className="button" >Login</button>
 					</form>
-					<button onClick = {this.handleVideo.bind(this)}>Button video</button>
-					<button onClick = {this.handleCapture.bind(this)}>Capture Image</button>
 					</div>
 					<Footer />
 				</div>

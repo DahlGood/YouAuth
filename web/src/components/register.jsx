@@ -2,7 +2,7 @@ import React from "react";
 import "../styles/account.scss"
 import "../styles/register.scss"
 
-import { Header, Media, Footer, Button } from "./index";
+import { Header, Media, Footer, Button, Video } from "./index";
 
 import {FaceCapture} from "../../node_modules/youauth/face_capture";
 import {ToastContainer, toast, Zoom} from 'react-toastify';
@@ -24,7 +24,8 @@ export class Register extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			face: null
+			face: null,
+			mediaSelected:0
 		}
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
@@ -54,10 +55,11 @@ export class Register extends React.Component {
 	}
 
 	handleVideo(e){
+		this.setState({mediaSelected:1});
 		let constraints = {
 			video: {
-				width: 630,
-				height: 500
+				width: 336,
+				height: 233.762
 			}
 		};
 
@@ -93,7 +95,7 @@ export class Register extends React.Component {
 			<div className="accounts register">
 				<div className="">
 					<Header position={0}/>
-					<Media />
+					{this.state.mediaSelected?<Video />:<Media />}
 					<ToastContainer autoClose={6000} className = "error-toast" />
 					<form className="form" onSubmit={this.handleSubmit}>
 						<div className="form-group">

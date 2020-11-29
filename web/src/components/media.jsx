@@ -8,7 +8,6 @@ export class Media extends Component {
         return (
             
             <div className="media">
-                <video>Hi</video>
                 <img src={loginImage} alt="" />
             </div>
         )

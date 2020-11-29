@@ -25,7 +25,7 @@ async function loadModels(){
 // FaceRecognizer Object constructor.
 function FaceRecognizer(){
   // Minimum confidence for valid face. Higher means less chance of bad face detections (less accurate face descriptors).
-  this.minConfidence = 0.9;
+  this.minConfidence = 0.8;
   // The euclidean distance threshold. Lower means faceMatcher will look for more accurate match.
   this.distanceThreshold = 0.5;
   // Use SSD MobileNet Face Detection for higher accuracy. Uses minConfidence to set face detection threshold.

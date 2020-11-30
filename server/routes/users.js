@@ -63,7 +63,7 @@ router.post("/register", jsonParser, (req, res) => {
 		if (user) {
 			return res
 				.status(400)
-				.json({ error: "A user with that Email already exists dumbass." });
+				.json({ error: "A user with that Email already exists idiot." });
 		} else {
 			const newUser = new User({
 				fName: req.body.fName,
@@ -143,7 +143,7 @@ router.post("/login", jsonParser, (req, res) => {
 					return res.status(200).json({success: "Login Successful!"});
 				}
 				else{
-					return res.status(400).json({error: "Password incorrect!"});
+					return res.status(400).json({error: "Incorrect password!"});
 				}
 			});
 		}

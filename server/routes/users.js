@@ -143,7 +143,7 @@ router.post("/login", jsonParser, (req, res) => {
 			if (!user) {
 				return res
 					.status(400)
-					.json({ error: "Invalid Email Address idiot" });
+					.json({ error: "Email doesn't exist" });
 			}
 			console.log("Correct");
 			res.json({ success:"Login succesful!" });

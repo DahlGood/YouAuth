@@ -1,8 +1,9 @@
 import React from "react";
 import "../styles/account.scss"
 import "../styles/register.scss"
+import faceIcon from "../Camera-icon.png"
 
-import { Header, Media, Footer, Button } from "./index";
+import { Header, Media, Footer, Button, Video } from "./index";
 
 import {FaceCapture} from "../../node_modules/youauth/face_capture";
 import {ToastContainer, toast, Zoom} from 'react-toastify';
@@ -24,7 +25,8 @@ export class Register extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			face: null
+			face: null,
+			mediaSelected:0
 		}
 		this.handleSubmit = this.handleSubmit.bind(this);
 	}
@@ -53,11 +55,13 @@ export class Register extends React.Component {
 		
 	}
 
-	handleVideo(e){
+	async handleVideo(e){
+		await this.updateVideo();
+		
 		let constraints = {
 			video: {
-				width: 630,
-				height: 500
+				width: 271.989,
+				height: 189
 			}
 		};
 
@@ -65,6 +69,10 @@ export class Register extends React.Component {
 		var imageBitmap;
 		faceCapture = new FaceCapture(constraints, video);
 		faceCapture.startStream();
+	}
+
+	updateVideo() {
+		this.setState(this.state.mediaSelected ? {mediaSelected:0}:{mediaSelected:1});
 	}
 
 
@@ -93,7 +101,9 @@ export class Register extends React.Component {
 			<div className="accounts register">
 				<div className="">
 					<Header position={0}/>
-					<Media />
+					<div className="media" style={{minHeight:"192px",minWidth:"272px"}}>
+						{this.state.mediaSelected?<Video cap={this.handleCapture.bind(this)} />:<Media />}
+					</div>
 					<ToastContainer autoClose={6000} className = "error-toast" />
 					<form className="form" onSubmit={this.handleSubmit}>
 						<div className="form-group">
@@ -105,19 +115,16 @@ export class Register extends React.Component {
 						<div className="form-group">
 							<input type="text" name="email" id="email" placeholder="Email" />
 						</div>
-						<div className="form-group">
-							<input type="password" name="password" placeholder="Password" />
+						<div className="form-group" style= {{position:"relative"}}>
+							<input type="password" name="password" placeholder="Password" style={{position:"relative"}}/>
+							<button type="button" onClick = {this.handleVideo.bind(this)} className = "camera" style={{marginLeft:"85%", marginTop:"2%", position:"absolute"} }><img src = {faceIcon}/></button>
 						</div>
 						<div className="form-group">
 							<input type="password" name="confirm_password" placeholder="Confirm Password" />
 						</div>
 
-						<button className="button">Register</button>
+						<button value="hi" type="no" className="button">Register</button>
 					</form>
-					
-					<button onClick = {this.handleVideo.bind(this)}>Button video</button>
-					<button onClick = {this.handleCapture.bind(this)}>Capture Image</button>
-					<Footer />
 				</div>
 
 			</div>

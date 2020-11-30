@@ -17,7 +17,7 @@ module.exports = function validateRegistration(input) {
 		errors.lName = "You must enter a last name.";
 	}
 
-	if(validator.isEmpty(input.email) && validator.isEmail(input.email)) {
+	if(validator.isEmpty(input.email) || !validator.isEmail(input.email)) {
 		errors.email = "You must enter a valid email.";
 	}
 
@@ -33,7 +33,5 @@ module.exports = function validateRegistration(input) {
 		errors.confirm_password = "Your passwords do not match."
 	}
 
-
-	return {errors, valid: errors.length?true:false};
-
+	return {errors, notValid: Object.keys(errors).length ? true:false};
 };

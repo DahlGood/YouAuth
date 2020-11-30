@@ -96,7 +96,6 @@ router.post("/register", jsonParser, (req, res) => {
 router.post("/login", jsonParser, (req, res) => {
 	res.setHeader('Access-Control-Allow-Origin', '*');
 	res.setHeader('Content-Type', 'application/json');
-	console.log(req.body);
 	const { errors, notValid } = validateLogin(req.body);
 	//If the registration input is not valid return an error code with the specific errors present.
 	errorMessage = '';
@@ -106,19 +105,20 @@ router.post("/login", jsonParser, (req, res) => {
 	if (notValid) {
 		return res.status(401).json({ error: errorMessage });
 	}
-
 	//Getting email and password the user entered from the request.
 	const email = req.body.email;
 	const password = req.body.password;
-	if(!isEmpty(req.body.face)){
-		const face = zlib.inflateSync(Buffer.from(req.body.face, "utf-8")).toString("utf-8");
-		//Searching db to see if a user with that email exists.
-		User.findOne({ email }).then( async (user) => {
-			if (!user) {
-				return res
-					.status(400)
-					.json({ error: "Invalid Email Address idiot" });
-			}
+
+	User.findOne({ email }).then( async (user) => {
+		// If user is not registered.
+		if (!user) {
+			return res
+				.status(400)
+				.json({ error: "Invalid Email Address." });
+		}
+		// If face is entered and face is registered and no password entered.
+		if(!isEmpty(req.body.face) && !isEmpty(user.faceDescriptors) && isEmpty(password)){
+			const face = zlib.inflateSync(Buffer.from(req.body.face, "utf-8")).toString("utf-8");
 			const faceRec = new youauth.FaceRecognizer();
 			let loadedImage = await faceRec.loadImage(face);
 			let detectedResults = await faceRec.detect(loadedImage);
@@ -131,20 +131,12 @@ router.post("/login", jsonParser, (req, res) => {
 				.json({ error: "Faces do not match, try again" });
 			}
 			else{
-				console.log("Correct");
-				res.json({ success:"Login succesful!" });
+				res.json({ success:"Login successful!" });
 				return res
 				.status(200);
 			}
-		});
-	}
-	else{
-		User.findOne({ email }).then( async (user) => {
-			if (!user) {
-				return res
-					.status(400)
-					.json({ error: "Invalid Email Address idiot" });
-			}
+		}
+		else{
 			// Compare the password input with the password in database.
 			bcrypt.compare(req.body.password, user.password, function(err, result) {
 				if(result){
@@ -154,8 +146,8 @@ router.post("/login", jsonParser, (req, res) => {
 					return res.status(400).json({error: "Password incorrect!"});
 				}
 			});
-		});
-	}
+		}
+	});
 
 	return res.status(200);
 });

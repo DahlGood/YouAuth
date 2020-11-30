@@ -145,10 +145,15 @@ router.post("/login", jsonParser, (req, res) => {
 					.status(400)
 					.json({ error: "Invalid Email Address idiot" });
 			}
-			console.log("Correct");
-			res.json({ success:"Login succesful!" });
-			return res
-			.status(200);
+			// Compare the password input with the password in database.
+			bcrypt.compare(req.body.password, user.password, function(err, result) {
+				if(result){
+					return res.status(200).json({success: "Login Successful!"});
+				}
+				else{
+					return res.status(400).json({error: "Password incorrect!"});
+				}
+			});
 		});
 	}
 

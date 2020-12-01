@@ -76,7 +76,7 @@ export class Login extends React.Component {
 		let compressedImage = zlib.deflateSync(faceCapture.takePicture());
 
 		this.state.face = compressedImage;
-		toast.success("Image capture successful, try to login dumbass");
+		toast.success("Image capture successful, try to login");
 		
 	}
 

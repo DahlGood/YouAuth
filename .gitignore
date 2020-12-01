@@ -29,3 +29,8 @@ yarn-error.log*
 /server/.env
 /opencvjs/node_modules
 node_modules
+
+/server/cert.pem
+/server/privkey.pem
+/web/cert.pem
+/web/privkey.pem

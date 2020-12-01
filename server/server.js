@@ -13,6 +13,8 @@ const passport = require("passport");
 //Importing our api-endpoints
 const users = require("./routes/users");
 
+const https = require("https");
+
 //Setting environment variable config.
 require("dotenv").config();
 
@@ -55,6 +57,20 @@ server.use(cors());
 //Routes
 server.use("/users", users);
 
+const fs = require("fs");
+
+var key = fs.readFileSync(__dirname + '/privkey.pem');
+var cert = fs.readFileSync(__dirname + '/cert.pem');
+
+var options = {
+	key: key,
+	cert: cert
+}
+
+https.createServer(options, server).listen(envVars.PORT);
+
+/*
 server.listen(envVars.PORT, () => {
 	console.log("Server running on port: " + envVars.PORT);
 });
+*/

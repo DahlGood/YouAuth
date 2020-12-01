@@ -3,10 +3,10 @@ import "../styles/account.scss"
 import "../styles/register.scss"
 import faceIcon from "../Camera-icon.png"
 
-import { Header, Media, Footer, Button, Video } from "./index";
+import { Header, Media, Video } from "./index";
 
 import {FaceCapture} from "../../node_modules/youauth/face_capture";
-import {ToastContainer, toast, Zoom} from 'react-toastify';
+import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const axios = require("axios");
@@ -66,7 +66,6 @@ export class Register extends React.Component {
 		};
 
 		var video = document.querySelector('video');
-		var imageBitmap;
 		faceCapture = new FaceCapture(constraints, video);
 		faceCapture.startStream();
 	}
@@ -85,7 +84,8 @@ export class Register extends React.Component {
 			face: compressedImage
 		}
 		axios.post(REACT_APP_CHECKROUTE, shortUserData).then(response => {
-			this.state.face = response.data.desc;
+			this.setState({face: response.data.desc});
+			//this.state.face = response.data.desc;
 			toast.success("Image Capture Successful!");
 		}).catch(err => {
 			if(err && err.response && err.response.data){
@@ -117,7 +117,7 @@ export class Register extends React.Component {
 						</div>
 						<div className="form-group" style= {{position:"relative"}}>
 							<input type="password" name="password" placeholder="Password" style={{position:"relative"}}/>
-							<button type="button" onClick = {this.handleVideo.bind(this)} className = "camera" style={{marginLeft:"85%", marginTop:"2%", position:"absolute"} }><img src = {faceIcon}/></button>
+							<button type="button" onClick = {this.handleVideo.bind(this)} className = "camera" style={{marginLeft:"85%", marginTop:"2%", position:"absolute"} }><img src = {faceIcon} alt="Laptop"/></button>
 						</div>
 						<div className="form-group">
 							<input type="password" name="confirm_password" placeholder="Confirm Password" />

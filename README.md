@@ -12,9 +12,11 @@ What differentiates YouAuth from standard login systems is that it uses biometri
 
 * User login and registration pages.
 * Image capture
-* Image training with OpenCV
-* 2FA
+* Image training with FaceAPI
 * Secure data storage
+
+#Testing
+https://docs.google.com/document/d/1Nirp_maQB-Z6LEGPbceiQUi6ohhWNVIE9vDyhigRHWs/edit?usp=sharing
 
 ## Persona
 

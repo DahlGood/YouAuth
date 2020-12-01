@@ -6,12 +6,6 @@ import React, { Component } from 'react'
 
 
 export class Video extends Component {
-
-    constructor(props) {
-		super(props);
-	}
-   
-    
     
     render() {
 		return (

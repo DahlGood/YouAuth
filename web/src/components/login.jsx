@@ -5,7 +5,7 @@ import faceIcon from "../Camera-icon.png"
 import { Header, Media, Footer, Video } from "./index";
 import {FaceCapture} from "../../node_modules/youauth/face_capture";
 
-import {ToastContainer, toast, Zoom} from 'react-toastify';
+import {ToastContainer, toast} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const axios = require("axios");
 const zlib = require("zlib");
@@ -13,7 +13,7 @@ let faceCapture = null;
 //Importing environment variables from .env
 require("dotenv").config();
 const envVars = process.env;
-const { REACT_APP_LOGINROUTE, REACT_APP_CHECKROUTE } = envVars;
+const { REACT_APP_LOGINROUTE} = envVars;
 
 export class Login extends React.Component {
 	constructor(props) {
@@ -60,7 +60,6 @@ export class Login extends React.Component {
 		};
 
 		var video = document.querySelector('video');
-		var imageBitmap;
 		faceCapture = new FaceCapture(constraints, video);
 		faceCapture.startStream();
 		console.log("Done Handling Video");
@@ -74,8 +73,8 @@ export class Login extends React.Component {
 	handleCapture(){
 		
 		let compressedImage = zlib.deflateSync(faceCapture.takePicture());
-
-		this.state.face = compressedImage;
+		this.setState({face: compressedImage});
+		//this.state.face = compressedImage;
 		toast.success("Image capture successful, try to login");
 		
 	}
@@ -99,7 +98,7 @@ export class Login extends React.Component {
 						</div>
 						<div className="form-group" style= {{position:"relative"}}>
 							<input type="password" name="password" placeholder="Password" style={{position:"relative"}}/>
-							<button type="button" onClick = {this.handleVideo.bind(this)} className = "camera" style={{marginLeft:"85%", marginTop:"2%", position:"absolute"} }><img src = {faceIcon}/></button>
+							<button type="button" onClick = {this.handleVideo.bind(this)} className = "camera" style={{marginLeft:"85%", marginTop:"2%", position:"absolute"} }><img src = {faceIcon} alt="Laptop"/></button>
 						</div>
 						<button className="button" >Login</button>
 					</form>

@@ -69,7 +69,15 @@ YouAuth is split into three main folders, server, web and youauth.
 
 ### UML
 
-*![USE CASE UML](UML.png)
+![USE CASE UML](UML.png)
+
+## Screenshots
+
+Website:
+
+![LOGIN](login.png)
+
+![REGISTER](register.png)
 
 ## How to Install
 
@@ -79,7 +87,7 @@ YouAuth is split into three main folders, server, web and youauth.
 * Start Mongo and create database called YouAuth.
 * Drop the folder somewhere you want to deploy the server on, such as DigitalOcean. Or localhost.
 * Go into server and web folder and type 'npm install'.
-* Configure the routes to your liking in web/.env file.
+* Configure the routes with your IP address in web/.env file. Comment out HTTPS and HOST if domain is unavailable.
 * Mongo URI is in server/.env file.
 * To run express backend, in server folder run 'node server.js'.
 * To run react frontend, in web folder run 'npm start'.

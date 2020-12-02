@@ -71,6 +71,8 @@ YouAuth is split into three main folders, server, web and youauth.
 
 ![USE CASE UML](UML.png)
 
+https://viewer.diagrams.net/?highlight=0000ff&edit=_blank&layers=1&nav=1#G1-2pagRXliAX_WKGYNPfYBwJATpP-NGXq
+
 ## Screenshots
 
 Website:

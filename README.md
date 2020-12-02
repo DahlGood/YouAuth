@@ -8,6 +8,10 @@ For companies, campuses, and other larger organizations/corporations who need be
 
 What differentiates YouAuth from standard login systems is that it uses biometrics, an increasingly popular way of identifying individuals based off their biological features. Unlike similar security services like FaceID, YouAuth will not be device specific, and can be cross platform as necessary for platforms that support running web applications.
 
+## Project Relevance
+
+This project will meet each of the four educational goals for this class. The face login web app will require a front-end and back-end which will each need to be built separately, as well as handle issue tracking and testing independently. As far as testing goes I believe data driven testing would be ideal for this project. We would be able to consistently test the facial recognition software with a pre-selected set of varied faces and user settings. We will also be using UML diagrams to help plan and design the development and workflow of the application.
+
 ## Features
 
 * User login and registration pages.

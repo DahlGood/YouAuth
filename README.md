@@ -69,7 +69,7 @@ YouAuth is split into three main folders, server, web and youauth.
 
 ### UML
 
-*UML GOES HERE*
+*![USE CASE UML](UML.png)
 
 ## How to Install
 

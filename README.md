@@ -4,19 +4,26 @@
 Luke Dependahl, Ramey Elayan, Peter Zheng, Nate Hansell
 
 ## Project Vision
-For companies, campuses, and other larger organizations/corporations who need better and more efficient security for their websites. YouAuth will be a node module that can be seamlessly integrated into websites to provide facial recognition functionality through the use of the open source computer vision library, OpenCV. YouAuth can either replace the use of usernames/passwords, or be added as an extra layer of authentication.
+For companies, campuses, and other larger organizations/corporations who need better and more efficient security for their websites. YouAuth will be a web application that can be seamlessly integrated into websites to provide facial recognition functionality through the use of a FaceAPI. YouAuth can either replace the use of usernames/passwords, or be added as an extra layer of authentication.
 
 What differentiates YouAuth from standard login systems is that it uses biometrics, an increasingly popular way of identifying individuals based off their biological features. Unlike similar security services like FaceID, YouAuth will not be device specific, and can be cross platform as necessary for platforms that support running web applications.
 
 ## Features
 
 * User login and registration pages.
-* Image capture
-* Image training with FaceAPI
-* Secure data storage
+* Image capture.
+* Image training with FaceAPI.
+* Secure data storage.
 
-#Testing
+## Testing
+Manual Testing:
+
 https://docs.google.com/document/d/1Nirp_maQB-Z6LEGPbceiQUi6ohhWNVIE9vDyhigRHWs/edit?usp=sharing
+
+## Project Board:
+Trello:
+
+https://trello.com/b/p6nAi78i/youauth
 
 ## Persona
 
@@ -38,3 +45,44 @@ Logging into these websites can take a long time and be very frustrating because
 If Jacob had access to YouAuth, the facial recognition software would help him log into
 these website securely and quickly without having to struggle to enter in long, complicated passwords. 
 Not only would this save Jacob time at work but it would also help him avoid unwarranted frustration.
+
+## Dependencies
+Check out face-api.js, it's really cool!
+* face-api.js:
+https://github.com/justadudewhohacks/face-api.js/
+
+
+## Project Structure
+
+YouAuth is split into three main folders, server, web and youauth.
+* server: Express
+* web: React
+* youauth: Node module using face-api.js.
+
+### UML
+
+*UML GOES HERE*
+
+## How to Install
+
+* Download our latest release.
+* Install Node.js. Link: https://nodejs.org/en/download/
+* Install MongoDB. Link: https://www.mongodb.com/try/download/community
+* Start Mongo and create database called YouAuth.
+* Drop the folder somewhere you want to deploy the server on, such as DigitalOcean. Or localhost.
+* Go into server and web folder and type 'npm install'.
+* Configure the routes to your liking in web/.env file.
+* Mongo URI is in server/.env file.
+* To run express backend, in server folder run 'node server.js'.
+* To run react frontend, in web folder run 'npm start'.
+
+### Installation Issues
+
+Windows: If you encounter an error saying 'specified module cannot be found' with tensorflow.
+* Navigate to youauth/node_modules/@tensorflow/tfjs-node.
+* Move tensorflow.dll from deps/lib.
+* Navigate back out to tfjs-node folder, and place the file inside lib/napi-v5.
+
+Or you can optionally disable tensorflow in the code, but it makes face-api run much faster.
+* In youauth/face_recognizer.js
+* Uncomment const tf = require('@tensorflow/tfjs-node');
